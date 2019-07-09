@@ -1,6 +1,6 @@
 Package: cbmbtools
 Title: CB's Collection of  Microbiome Analysis Functions
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     person(given = "Christopher",
            family = "Brown",
@@ -14,7 +14,9 @@ BugReports: https://github.com/cb-42/cbmbtools/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
- forcats,
- ggplot2,
- scales
+  dplyr,
+  forcats,
+  ggplot2,
+  scales,
+  stringr
 RoxygenNote: 6.1.1
