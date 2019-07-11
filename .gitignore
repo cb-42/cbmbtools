@@ -1,4 +1,6 @@
 .Rproj.user
+.Rbuildignore
 .Rhistory
 .DS_Store
 dev.Rmd
+*.pdf
