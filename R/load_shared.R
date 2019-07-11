@@ -15,7 +15,7 @@ load_shared <- function(shared) {
 
   # Convert trim to matrix in order to work with which() since data.frame will throw an error
   otu_trim <- as.matrix(otu_trim)
-  otu_tmp <- decostand(otu_trim, "total") * 100
+  otu_tmp <- vegan::decostand(otu_trim, "total") * 100
   otu_trim[which(otu_tmp < 0.1)] <- 0
   otu_good <- otu_trim[, which(colSums(otu_trim) > 0)]
   return(otu_good)
