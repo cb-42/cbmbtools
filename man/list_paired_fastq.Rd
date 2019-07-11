@@ -4,12 +4,14 @@
 \alias{list_paired_fastq}
 \title{Generate a list of paired fastq files from given directory.}
 \usage{
-list_paired_fastq(dir_in, f_out)
+list_paired_fastq(dir_in, f_out, mothur = TRUE)
 }
 \arguments{
 \item{dir_in}{Directory containing paired fastq files. Files that do not contain "_R1_" or "_R2_" in the filename will be ignored (e.g. config.xml).}
 
 \item{f_out}{Output file path. A .csv with two columns containing the fastq pairs listed in \code{dir_in} will be written to \code{f_out}.}
+
+\item{mothur}{Boolean for whether a fastq list is created for mothur processing (TRUE) or SRA upload preparation (FALSE). TRUE by default.}
 }
 \value{
 No value is returned.
@@ -18,5 +20,6 @@ No value is returned.
 Generate a list of paired fastq files from given directory.
 }
 \examples{
-list_paired_fastq(dir_in = "fastq_files", f_out = "exp1_files.csv")
+list_paired_fastq(dir_in = "unzipped_fastq_files_mothur")
+list_paired_fastq(dir_in = "fastq_files_sra", f_out = "exp1_files.csv", mothur = FALSE)
 }
