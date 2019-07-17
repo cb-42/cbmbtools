@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_shared.R
 \name{load_shared}
 \alias{load_shared}
-\title{Reads in a file containing OTU count data and keeps only OTUs > 0.1 % of the population.}
+\title{Reads in a file containing OTU count data and keeps only OTUs > 0.1 \% of the population.}
 \usage{
 load_shared(shared)
 }
@@ -10,10 +10,10 @@ load_shared(shared)
 \item{shared}{An opti_mcc.shared file resulting from processing via mothur.}
 }
 \value{
-Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 % of the population.
+Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 \% of the population.
 }
 \description{
-Reads in a file containing OTU count data and keeps only OTUs > 0.1 % of the population.
+Reads in a file containing OTU count data and keeps only OTUs > 0.1 \% of the population.
 }
 \examples{
 load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")

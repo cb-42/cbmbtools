@@ -1,7 +1,7 @@
-#' Reads in a file containing OTU count data and keeps only OTUs > 0.1 % of the population.
+#' Reads in a file containing OTU count data and keeps only OTUs > 0.1 \% of the population.
 #'
 #' @param shared An opti_mcc.shared file resulting from processing via mothur.
-#' @return Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 % of the population.
+#' @return Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 \% of the population.
 #' @export
 #' @examples
 #' load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
