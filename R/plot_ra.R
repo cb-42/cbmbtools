@@ -17,12 +17,12 @@ plot_ra <- function(df, title = "", error_bar = FALSE, facet_var = NULL, tax_fil
 
   # account for fill, either by a taxonomy condition, or grey
   if(!is.null(tax_fill)) { # controls all tax cases, and Sample (controls) (or presumably other columns that exist in data)
-    p <- ggplot(data = data, aes(y = Mean_Perc, x = OTU, fill = .data[[tax_fill]])) +
+    p <- ggplot(data = df, aes(y = Mean_Perc, x = OTU, fill = .data[[tax_fill]])) +
       geom_col() +
       labs(fill = tax_fill)
   } # should fill be set to facet_var in cases where tax_fill (e.g. taxonomy data) is null?
   else { # This is primarily aimed at cases where there is no tax_fill or faceting
-    p <- ggplot(data = data, aes(y = Mean_Perc, x = OTU)) +
+    p <- ggplot(data = df, aes(y = Mean_Perc, x = OTU)) +
       geom_col(fill="grey")
   }
 
@@ -43,7 +43,7 @@ plot_ra <- function(df, title = "", error_bar = FALSE, facet_var = NULL, tax_fil
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5), legend.position = "top") + # angles axis text; repositions legend
     labs(title = title, x = "OTUs", y = "% Relative Abundance")
 
-  if(txt == TRUE) {
+  if(gtxt == TRUE) {
     # this helps show OTUs have a value of 0; related to a knit issue that shows sliver of color when OTUs actually have a true value of 0
     p <- p + geom_text(aes(label = paste0(round(Mean_Perc, 2), "%"), vjust = 0), size = 2)
   }
