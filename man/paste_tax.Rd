@@ -4,20 +4,20 @@
 \alias{paste_tax}
 \title{Paste Genus information onto a vector of OTU numbers.}
 \usage{
-paste_tax(otu_vec, tax = otu.good.taxonomy)
+paste_tax(otu_vec, tax = otu_good_taxonomy)
 }
 \arguments{
-\item{otu_vec}{Vector of OTU numbers, used to select rownames (OTUs) in taxonomy table.}
+\item{otu_vec}{Vector of OTU identifiers, used to select rownames (OTU IDs) in \code{tax}.}
 
-\item{tax}{Taxonomy table. Default is otu.good.taxonomy (used historically).}
+\item{tax}{Taxonomy table, otu_good_taxonomy by default.}
 }
 \value{
-A factor vector comprised of taxonomy label and OTU number, with levels that match the order of OTUs in \code{otu_vec}.
+A factor vector comprised of taxonomy label and OTU identifier, with levels that match the order of OTUs in \code{otu_vec}.
 }
 \description{
 Paste Genus information onto a vector of OTU numbers.
 }
 \examples{
-paste_tax(rownames(otu.good.taxonomy)[1:20])
-otu.df$OTU <- paste_tax(otu.df$OTU)
+paste_tax(rownames(otu_good_taxonomy)[1:20])
+otu_df$OTU <- paste_tax(otu_df$OTU)
 }
