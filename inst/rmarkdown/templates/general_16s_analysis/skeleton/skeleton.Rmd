@@ -1,0 +1,104 @@
+---
+title: "Untitled 16S Analysis"
+author: "Christopher A. Brown"
+date: "July 25, 2019"
+output: pdf_document
+---
+---
+geometry: margin = 1.25cm
+---
+This report was built with R version `r getRversion()`. 
+
+```{r rmd_setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, # whether code should be displayed in document
+                      cache = TRUE, # whether to cache results of code chunks for future knits
+                      fig.align = 'center', # alignment options: 'left', 'right', 'center', 'default'
+                      error = TRUE # display error messages in document (TRUE) or stop render on error (FALSE)
+                      )
+```
+
+```{r notes, include = FALSE}
+# space for notes/to do list/goals that shouldn't be included in resulting report
+```
+
+```{r libraries, message = FALSE}
+# This section contains a list of typical libraries used and others (commented out) that could be useful in other situations
+
+# I. universal data wrangling and visualization
+library(tidyverse)      # ggplot, dplyr, purrr, forcats, stringr... and other packages. See https://tidyverse.tidyverse.org/
+
+# II. formatting, plotting
+library(scales)         # used in formatting relative abundance % labels; dollar_format()
+library(knitr)          # necessary for kable, for displaying nicer tables in html/pdf output
+library(RColorBrewer)   # for generating custom palettes
+# library(gganimate)      # useful for comparing data across time points or changes in a single categorical variable
+
+# III. analysis packages
+library(vegan)          # decostand(), metaMDS(), scores(), rda(), ordispider(), adonis()
+library(MASS)           # isoMDS(); masks dplyr::select()
+library(mvabund)
+# library(caret)          # vast support for all flavors of predictive models
+
+# IV. functions for automating and streamlining workflow
+devtools::install_github("https://github.com/cb-42/cbmbtools")
+library(cbmbtools)
+```
+
+# I. Data Preparation
+
+```{r load_16s, message = FALSE, include = FALSE}
+# For ease of use, place the processed 16S data files of interest into the same directory as your current RStudio project
+
+# Basic processing with selection of OTUs > 0.1 % of the population
+# I. Read in opti_mcc.shared
+otu_good <- load_shared(shared = "miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
+
+# Trim _S from end of rownames(otu_good); note that it may be useful to keep these well identifiers in some analyses
+rownames(otu_good) <- str_remove(rownames(otu_good), "_S\\d+")
+
+# It's a good idea to inspect the data regularly with tools such as dim(), str(), head(), tail(), summary()... This will help in catching errors earlier
+dim(otu_good) # dim(otu_good)[1] observations (samples) x dim(otu_good)[2] features (OTUs above .1% population threshold)
+
+# II. Read in cons.taxonomy
+otu.good.taxonomy <- load_tax("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy", otu_good = otu_good)
+dim(otu.good.taxonomy)
+```
+
+```{r metadata_wrangling, include = FALSE}
+# Load in metadata/environmental data, or create it
+
+# Examples of metadata creation
+otu_df <- data.frame(decostand(otu_good, "total") * 100, Sample_name = row.names(otu_good), stringsAsFactors = FALSE) %>%
+  # Create Experiment from first string of characters prior to first "_"
+  mutate(Experiment = factor(case_when(str_detect(Sample_name, "Exp\\d") ~ str_extract(Sample_name, "Exp\\d"),
+                                       str_detect(Sample_name, "^AE_") ~ "AE",
+                                       str_detect(Sample_name, "^empty_") ~ "Empty",
+                                       str_detect(Sample_name, "^IsoCtrl_") ~ "IsoCtrl",
+                                       str_detect(Sample_name, "^Water|^WATER") ~ "WaterNeg",
+                                       str_detect(Sample_name, "^Mock") ~ "Mock"),
+                             levels = c("Exp1", "Exp2", "AE", "Empty", "IsoCtrl", "WaterNeg", "Mock"))
+         ) %>%
+  # Create Day; account for empty_D1 and empty_D2 which refer to wells and not days
+  mutate(Day = factor(case_when(str_detect(Sample_name, "_D\\d+_") & Experiment != "Empty" ~ str_extract(Sample_name, "D\\d+"))
+                      ) # sum(is.na(otu_df$Day)) returns __ (as expected, controls have NA in this column)
+         ) %>%
+  # Create Organ
+  mutate(Organ = factor(case_when(str_detect(Sample_name, "_Cecum_") ~ "Cecum",
+                                  str_detect(Sample_name, "_Colon_") ~ "Colon",
+                                  str_detect(Sample_name, "_Feces_") ~ "Feces"),
+                        levels = c("Feces", "Colon", "Cecum")
+                ) # sum(is.na(otu_df$Organ)) returns __ (as expected, controls have NA in this column)
+         ) %>%
+  # Create Mouse
+  mutate(Mouse = as.numeric(str_extract(Sample_name, "(?<=M)\\d+")
+              ) # sum(is.na(otu_df$Mouse)) returns __ (as expected, the controls have NA in this column)
+         ) %>%
+  # Create Run
+  mutate(Run = str_extract(Sample_name, "(?<=N)\\d$")
+         ) %>%
+  # metadata columns at front, followed by all of the count data
+  dplyr::select(Sample_name:Run, everything())
+  # note that the data is in wide format
+```
+
+After the data was processed using mothur(v.1.39.4), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. Next, any OTU count that made up less than .1% of the total OTU count for any given sample was set to 0. Subsequently, any OTUs which had a value of 0 for sum of counts across all samples were removed from the data, leaving `r dim(otu_good)[2]` OTUs for further analysis. There are `r dim(otu_good)[1]` samples when including all controls and experiments.
