@@ -19,7 +19,7 @@ list_paired_fastq <- function(dir_in, f_out, mothur = TRUE) {
     forContigs <- cbind(grep("_R1_", file_list, value = TRUE),
                         grep("_R2_", file_list, value = TRUE))
     rownames(forContigs) <- sub("_L001_R1_001.fastq", "", forContigs[,1])
-    write.table(forContigs, "miseq.txt", row.names = TRUE, sep = "\t", quote = FALSE)
+    write.table(forContigs, file = f_out, row.names = TRUE, sep = "\t", quote = FALSE)
   }
   else {
     df <- data.frame(filename1 = grep("_R1_", file_list, value = TRUE),
