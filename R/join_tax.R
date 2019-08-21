@@ -12,7 +12,7 @@
 join_tax <- function(df = otu_df, tax = otu_good_taxonomy) {
   # gather the data if no key column is detected
   if(!any(colnames(df) == "OTU") & any(stringr::str_detect(colnames(df), "Otu\\d+"))) {
-    df <- tidyr::gather(df, key = OTU, value = Percentage, -str_which(colnames(df), "Otu", negate = TRUE), factor_key = TRUE)
+    df <- tidyr::gather(df, key = OTU, value = Percentage, -stringr::str_which(colnames(df), "Otu", negate = TRUE), factor_key = TRUE)
   }
 
   # Retrieve factor levels to reassign them after join
