@@ -4,11 +4,16 @@
 \alias{plot_ra}
 \title{Create an ordered relative abundance plot}
 \usage{
-plot_ra(df, title = "", error_bar = FALSE, facet_var = NULL,
-  tax_fill = NULL, gtxt = FALSE)
+plot_ra(df, df_obs = NULL, taxon = "OTU", title = "",
+  error_bar = FALSE, facet_var = NULL, tax_fill = NULL,
+  gtxt = FALSE, seed = 123)
 }
 \arguments{
-\item{df}{Dataframe containing metadata and OTU abundance data in 'long' format, e.g. using tidyr::gather().}
+\item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using tidyr::gather().}
+
+\item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.}
+
+\item{taxon}{Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?}
 
 \item{title}{String to use as plot title. Defaults to an empty string.}
 
@@ -19,6 +24,8 @@ plot_ra(df, title = "", error_bar = FALSE, facet_var = NULL,
 \item{tax_fill}{Variable to use for fill color based on taxonomy table. By default, fill color is not based on taxonomy.}
 
 \item{gtxt}{Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.}
+
+\item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{geom_jitter()} layer that adds random noise to points.}
 }
 \value{
 A plot created based on \code{df} and the specified parameters.
@@ -27,6 +34,16 @@ A plot created based on \code{df} and the specified parameters.
 Create an ordered relative abundance plot
 }
 \examples{
-plot_ra(mock.df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample", tax_fill = "Phylum", txt = T)
-plot_ra(samp.df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated", facet_var = "Group", tax_fill = "Phylum", error_bar = T)
+plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
+   tax_fill = "Phylum", txt = T)
+
+plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
+   facet_var = "Group", tax_fill = "Phylum", error_bar = T)
+
+plot_ra(df = otu_agg, df_obs = otu_obs, title = "Feces Samples, Ordered by Day 0",
+   facet_var = "Day", tax_fill = "Phylum")
+
+plot_ra(df = phy_agg, df_obs = phy_obs, taxon = "Phylum",
+   title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
+   facet_var = "Day", tax_fill = "Phylum")
 }
