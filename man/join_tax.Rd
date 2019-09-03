@@ -4,21 +4,26 @@
 \alias{join_tax}
 \title{Join a dataframe with a taxonomy table.}
 \usage{
-join_tax(df = otu_df, tax = otu_good_taxonomy)
+join_tax(df = otu_df, tax_df = otu_good_taxonomy, tax_levels = NULL)
 }
 \arguments{
 \item{df}{Dataframe containing an OTU key column (resulting from a prior call to \code{tidyr::gather}) or alternatively numbered Otu columns, in which case \code{tidyr::gather()} will be called to create an OTU key column. Defaults to \code{otu_df}.}
 
-\item{tax}{Taxonomy table. \code{join_tax()} assumes that a column called OTU exists in \code{tax}. Defaults to \code{otu_good_taxonomy}.}
+\item{tax_df}{Taxonomy table. \code{join_tax()} assumes that a column called OTU exists in \code{tax_df}. Defaults to \code{otu_good_taxonomy}.}
+
+\item{tax_levels}{Vector specifying which taxonomic levels to join from \code{tax_df}.}
 }
 \value{
-A dataframe resulting from using \code{dplyr::inner_join} on \code{df} and \code{tax}.
+A dataframe resulting from using \code{dplyr::inner_join} on \code{df} and \code{tax_df}.
 }
 \description{
 Join a dataframe with a taxonomy table.
 }
 \examples{
-merged_meta_tax_df <- join_tax(df = otu_df, tax = otu_good_taxonomy)
+merged_meta_tax_df <- join_tax(df = otu_df, tax_df = otu_good_taxonomy)
+
 filt_merged_meta_tax_df <- dplyr::filter(otu_df, Treatment == "A") \%>\%
    join_tax()
+
+merged_meta_phy_fam_df <- join_tax(otu_df, otu_good_taxonomy, tax_levels = c("Phylum", "Family"))
 }
