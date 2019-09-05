@@ -35,7 +35,7 @@ Create an ordered relative abundance plot
 }
 \examples{
 plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
-   tax_fill = "Phylum", txt = T)
+   tax_fill = "Phylum", gtxt = T)
 
 plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
    facet_var = "Group", tax_fill = "Phylum", error_bar = T)
