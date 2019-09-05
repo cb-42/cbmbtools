@@ -57,7 +57,7 @@ plot_ra <- function(df, df_obs = NULL, taxon = "OTU", title = "", error_bar = FA
   }
 
   # Determine x-axis label
-  xlabel <- case_when(stringr::str_detect(taxon, "OTU") ~ "OTUs",
+  xlabel <- dplyr::case_when(stringr::str_detect(taxon, "OTU") ~ "OTUs",
                       stringr::str_detect(taxon, "Phylum") ~ "Phyla",
                       stringr::str_detect(taxon, "Class") ~ "Classes",
                       stringr::str_detect(taxon, "Order") ~ "Orders",
