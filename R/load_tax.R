@@ -11,15 +11,17 @@
 load_tax <- function(tax_file, otu_good=NULL) {
   # II. Read in taxonomy data
   # This requires 2 separate calls due to the use of tab and semicolon separators
-  tax1 <- read.table(tax_file, sep = "\t", row.names = 1, header = T)
-  tax2 <- read.table(tax_file, sep = ";", skip = 1)
+  tax1 <- read.table(tax_file, sep = "\t", row.names = 1, header = T, colClasses = c("character", "numeric", "character"))
+  tax2 <- read.table(tax_file, sep = ";", skip = 1, col.names = c("", "Phylum", "Class", "Order", "Family", "Genus", "")) %>%
+    dplyr::select(-c(1, 7)) %>%
+    purrr::map_df(stringr::str_replace, "\\(.*.\\)", "") %>% # removes (num) at end of Phylum:Genus names
+    purrr::map_df(as.factor)
 
   # Note, issues with tibble/data_frame eliminating rownames (an issue if using these to subset later on, such as in factor relabeling)
   # A rework of dependent code could make use of the fact that rownames are included in column1
 
-  otu_taxonomy <- data.frame(OTU = rownames(tax1), Size = tax1[,1], Phylum = tax2[,2], Class = tax2[,3], Order = tax2[,4], Family = tax2[,5], Genus = tax2[,6])  %>%
-    purrr::map_df(stringr::str_replace, "\\(.*.\\)", "") %>%  # removes (num) at end of Phylum:Genus names
-    as.data.frame() # any operation on a tibble or data_frame will strip the rownames, which we currently use for factor labels
+  otu_taxonomy <- data.frame(OTU = rownames(tax1), Size = tax1[,1], tax2)
+
   rownames(otu_taxonomy) <- rownames(tax1) # correct rownames that were stripped out by map_df()
 
   if(!is.null(otu_good)) {
