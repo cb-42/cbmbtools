@@ -14,4 +14,11 @@ library(cbmbtools)
 ```
 The functions, templates, and datasets contained within cbmbtools should now be accessible within your R environment.  
 
-Note that this package is in active development. If a newer version of cbmbtools is installed after the library has already been loaded in the current R session, you may need to restart your R session.  
+To update a previous installation to the latest version, use:
+```
+devtools::update_packages("cbmbtools")
+```
+
+Note that this package is in active development. If a newer version of cbmbtools is installed after the library has already been loaded in the current R session, you may need to restart your R session and then update/load the latest version.  
+
+
