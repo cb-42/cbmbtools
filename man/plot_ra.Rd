@@ -5,11 +5,11 @@
 \title{Create an ordered relative abundance plot}
 \usage{
 plot_ra(df, df_obs = NULL, taxon = "OTU", title = "",
-  error_bar = FALSE, facet_var = NULL, tax_fill = NULL,
-  gtxt = FALSE, seed = 123)
+  error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE,
+  seed = 123)
 }
 \arguments{
-\item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using tidyr::gather().}
+\item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{tidyr::gather()}.}
 
 \item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.}
 
@@ -21,7 +21,7 @@ plot_ra(df, df_obs = NULL, taxon = "OTU", title = "",
 
 \item{facet_var}{Variable to use for faceted plots. By default, no faceting will be used.}
 
-\item{tax_fill}{Variable to use for fill color based on taxonomy table. By default, fill color is not based on taxonomy.}
+\item{fill}{Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.}
 
 \item{gtxt}{Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.}
 
@@ -35,15 +35,15 @@ Create an ordered relative abundance plot
 }
 \examples{
 plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
-   tax_fill = "Phylum", gtxt = T)
+   fill = "Phylum", gtxt = T)
 
 plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
-   facet_var = "Group", tax_fill = "Phylum", error_bar = T)
+   facet_var = "Group", fill = "Phylum", error_bar = T)
 
 plot_ra(df = otu_agg, df_obs = otu_obs, title = "Feces Samples, Ordered by Day 0",
-   facet_var = "Day", tax_fill = "Phylum")
+   facet_var = "Day", fill = "Phylum")
 
 plot_ra(df = phy_agg, df_obs = phy_obs, taxon = "Phylum",
    title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
-   facet_var = "Day", tax_fill = "Phylum")
+   facet_var = "Day", fill = "Phylum")
 }

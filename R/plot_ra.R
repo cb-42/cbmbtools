@@ -1,43 +1,42 @@
 #' Create an ordered relative abundance plot
 #'
-#' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using tidyr::gather().
+#' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{tidyr::gather()}.
 #' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.
 #' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?
 #' @param title String to use as plot title. Defaults to an empty string.
 #' @param error_bar Boolean for whether to include an errorbar. If so, \code{df} should contain a column named SEM with this information.
 #' @param facet_var Variable to use for faceted plots. By default, no faceting will be used.
-#' @param tax_fill Variable to use for fill color based on taxonomy table. By default, fill color is not based on taxonomy.
+#' @param fill Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.
 #' @param gtxt Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.
 #' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{geom_jitter()} layer that adds random noise to points.
 #' @return A plot created based on \code{df} and the specified parameters.
 #' @export
 #' @examples
 #' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
-#'    tax_fill = "Phylum", gtxt = T)
+#'    fill = "Phylum", gtxt = T)
 #'
 #' plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
-#'    facet_var = "Group", tax_fill = "Phylum", error_bar = T)
+#'    facet_var = "Group", fill = "Phylum", error_bar = T)
 #'
 #' plot_ra(df = otu_agg, df_obs = otu_obs, title = "Feces Samples, Ordered by Day 0",
-#'    facet_var = "Day", tax_fill = "Phylum")
+#'    facet_var = "Day", fill = "Phylum")
 #'
 #' plot_ra(df = phy_agg, df_obs = phy_obs, taxon = "Phylum",
 #'    title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
-#'    facet_var = "Day", tax_fill = "Phylum")
+#'    facet_var = "Day", fill = "Phylum")
 
-# work in progress; now supports NULL case for tax_fill and as well as NULL/non-NULL faceting
-plot_ra <- function(df, df_obs = NULL, taxon = "OTU", title = "", error_bar = FALSE, facet_var = NULL, tax_fill = NULL, gtxt = FALSE, seed = 123) {
+plot_ra <- function(df, df_obs = NULL, taxon = "OTU", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE, seed = 123) {
   set.seed(seed)
 
   # account for fill, either by a taxonomy condition, or grey
-  if(!is.null(tax_fill)) { # controls all tax cases, and Sample (controls) (or presumably other columns that exist in data)
+  if(!is.null(fill)) { # controls all tax cases, and Sample (controls) (or presumably other columns that exist in data)
     p <- ggplot(data = df, aes(y = Mean_Perc, x = .data[[taxon]])) +
-      geom_col(aes(fill = .data[[tax_fill]])) +
-      labs(fill = tax_fill)
-  } # should fill be set to facet_var in cases where tax_fill (e.g. taxonomy data) is null?
-  else { # This is primarily aimed at cases where there is no tax_fill or faceting
+      geom_col(aes(fill = .data[[fill]])) +
+      labs(fill = fill)
+  } # should fill be set to facet_var in cases where fill (e.g. taxonomy data) is null?
+  else { # This is primarily aimed at cases where there is no fill or faceting
     p <- ggplot(data = df, aes(y = Mean_Perc, x = .data[[taxon]])) +
-      geom_col(fill="grey")
+      geom_col(fill = "grey")
   }
 
   # handle faceting (always by rows given nature of RA plots)
