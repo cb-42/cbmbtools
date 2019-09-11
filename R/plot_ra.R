@@ -1,7 +1,7 @@
 #' Create an ordered relative abundance plot
 #'
-#' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather()}}.
-#'     This dataframe is typically the result of processing via \code{\link{taxon_sort_gather()}}.
+#' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
+#'     This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.
 #' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.
 #' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?
 #' @param title String to use as plot title. Defaults to an empty string.

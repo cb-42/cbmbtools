@@ -9,8 +9,8 @@ plot_ra(df, df_obs = NULL, taxon = "OTU", title = "",
   seed = 123)
 }
 \arguments{
-\item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather()}}.
-This dataframe is typically the result of processing via \code{\link{taxon_sort_gather()}}.}
+\item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
+This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.}
 
 \item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.}
 
