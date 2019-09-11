@@ -7,7 +7,7 @@
 make_hel_pca(filt_df)
 }
 \arguments{
-\item{filt_df}{A dataframe that has been subset such that it contains only the observations of interest. This function will safely handle metadata columns, excluding these in the call to \code{vegan::decostand()}.}
+\item{filt_df}{A dataframe that has been subset such that it contains only the observations of interest. This function will safely handle metadata columns, excluding these in the call to \code{\link[vegan]{decostand}}.}
 }
 \value{
 Although no value is returned, \code{filt_df} will be used to create hellinger transformed data with "_hel" appended to \code{filt_df}.

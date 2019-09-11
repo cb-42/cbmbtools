@@ -1,4 +1,4 @@
-#' Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{many_rf()}.
+#' Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{\link{many_rf}}.
 #'
 #' @param rflist A list containing the random forest models.
 #' @param tax Taxonomy table. If \code{NULL}, no taxonomic labels will be added.

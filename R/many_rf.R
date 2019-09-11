@@ -3,8 +3,8 @@
 #' @param df Dataframe that contains the variables to be included in the model.
 #' @param y The response vector.
 #' @param nforest Number of random forests to create, 100 by default.
-#' @param seed Value passed to \code{set.seed()}, for ensuring reproducibility. Although the default is 1234, best practice would be to vary the seed, perhaps by project, or even by model.
-#' @param ... Optional parameters to pass to \code{randomForest()}.
+#' @param seed Value passed to \code{\link{set.seed}}, for ensuring reproducibility. Although the default is 1234, best practice would be to vary the seed, perhaps by project, or even by model.
+#' @param ... Optional parameters to pass to \code{\link[randomForest]{randomForest}}.
 #' @return A list object containing \code{nforest randomForest} models.
 #' @export
 #' @examples

@@ -9,7 +9,7 @@ plot_spider(pca_rda_obj, spider_vec, col_vec, col_pal, mtitle = "",
   sig_leg_pos = "topright", sig_leg = "")
 }
 \arguments{
-\item{pca_rda_obj}{Model object resulting from a call to \code{vegan::rda()}. The proportion of variance explained by PC1 and PC2 is extracted with \code{summary()}.}
+\item{pca_rda_obj}{Model object resulting from a call to \code{\link[vegan]{rda}}. The proportion of variance explained by PC1 and PC2 is extracted with \code{\link{summary}}.}
 
 \item{spider_vec}{Vector of metadata for determining spiders.}
 

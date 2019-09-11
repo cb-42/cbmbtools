@@ -9,7 +9,7 @@
 #' @param facet_var Variable to use for faceted plots. By default, no faceting will be used.
 #' @param fill Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.
 #' @param gtxt Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.
-#' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{geom_jitter()} layer that adds random noise to points.
+#' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.
 #' @return A plot created based on \code{df} and the specified parameters.
 #' @export
 #' @examples

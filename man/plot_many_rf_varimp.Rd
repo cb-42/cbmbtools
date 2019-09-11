@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_many_rf_varimp.R
 \name{plot_many_rf_varimp}
 \alias{plot_many_rf_varimp}
-\title{Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{many_rf()}.}
+\title{Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{\link{many_rf}}.}
 \usage{
 plot_many_rf_varimp(rf_list, tax = NULL)
 }
@@ -15,7 +15,7 @@ plot_many_rf_varimp(rf_list, tax = NULL)
 A boxplot based on \code{rflist} and \code{tax}.
 }
 \description{
-Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{many_rf()}.
+Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{\link{many_rf}}.
 }
 \examples{
 plot_many_rf_varimp(rflist = rf_vfd_otu_100, tax = otu_good_taxonomy)

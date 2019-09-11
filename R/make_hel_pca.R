@@ -1,6 +1,6 @@
 #' Create hellinger transformed data and PCA model from \code{filt_df}. Assumes \code{filt_df} is subset to desired specifications, but \code{make_hel_pca()} will safely handle metadata columns.
 #'
-#' @param filt_df A dataframe that has been subset such that it contains only the observations of interest. This function will safely handle metadata columns, excluding these in the call to \code{vegan::decostand()}.
+#' @param filt_df A dataframe that has been subset such that it contains only the observations of interest. This function will safely handle metadata columns, excluding these in the call to \code{\link[vegan]{decostand}}.
 #' @return Although no value is returned, \code{filt_df} will be used to create hellinger transformed data with "_hel" appended to \code{filt_df}.
 #' Likewise, a PCA model is created and saved to an object with "_pca" appended to \code{filt_df}.
 #' @export

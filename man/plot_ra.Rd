@@ -26,7 +26,7 @@ This dataframe is typically the result of processing via \code{\link{taxon_sort_
 
 \item{gtxt}{Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.}
 
-\item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{geom_jitter()} layer that adds random noise to points.}
+\item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.}
 }
 \value{
 A plot created based on \code{df} and the specified parameters.

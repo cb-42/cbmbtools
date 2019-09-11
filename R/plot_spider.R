@@ -1,6 +1,6 @@
 #' Create an ordination with spiders based on \code{spider_vec} and coloring determined by \code{col_vec}.
 #'
-#' @param pca_rda_obj Model object resulting from a call to \code{vegan::rda()}. The proportion of variance explained by PC1 and PC2 is extracted with \code{summary()}.
+#' @param pca_rda_obj Model object resulting from a call to \code{\link[vegan]{rda}}. The proportion of variance explained by PC1 and PC2 is extracted with \code{\link{summary}}.
 #' @param spider_vec Vector of metadata for determining spiders.
 #' @param col_vec Vector of metadata for determining how points should be colored.
 #' @param col_pal Palette to use for the plot's color scheme. Note that it should be at least as long as the number of unique values in \code{col_vec}.
