@@ -16,7 +16,7 @@ taxon_sort_gather(df, n = 50, facet_var = NULL, ord_val = NULL,
 
 \item{ord_val}{Level with the \code{facet_var} to be used for ranking OTUs.}
 
-\item{tax_df}{Taxonomy table. Passed to \code{join_tax()}. Defaults to \code{otu_good_taxonomy}.}
+\item{tax_df}{Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.}
 
 \item{tax_level}{Taxonomic level to join from \code{tax_df}. Defaults to Phylum.}
 }

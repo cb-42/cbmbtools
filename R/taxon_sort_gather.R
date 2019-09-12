@@ -4,7 +4,7 @@
 #' @param n Number of OTUs to return.
 #' @param facet_var Variable to be used for grouping and eventual faceting, possibly in \code{plot_ra}.
 #' @param ord_val Level with the \code{facet_var} to be used for ranking OTUs.
-#' @param tax_df Taxonomy table. Passed to \code{join_tax()}. Defaults to \code{otu_good_taxonomy}.
+#' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
 #' @param tax_level Taxonomic level to join from \code{tax_df}. Defaults to Phylum.
 #' @return A factor vector comprised of taxonomy label and OTU identifier, with levels that match the order of OTUs in \code{otu_vec}.
 #' @export
@@ -13,6 +13,10 @@
 #'   taxon_sort_gather(facet_var = "Treatment_group", ord_val = "untreated", tax_level = "Phylum")
 
 taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_df = otu_good_taxonomy, tax_level = "Phylum") {
+  # stderr helper - should fail when NAs are present
+  tsg_sem <- function(x) {
+    sqrt(var(x)/length(x))
+  }
 
   if(!is.null(facet_var)) {
     fv <- rlang::ensym(facet_var)
@@ -44,7 +48,7 @@ taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_
   }
 
   # Summary statistics
-  df <- dplyr::summarize(df, Mean_Perc = mean(Percentage), SEM = sem(Percentage)) %>%
+  df <- dplyr::summarize(df, Mean_Perc = mean(Percentage), SEM = tsg_sem(Percentage)) %>%
     dplyr::ungroup() %>%
     dplyr::filter(Mean_Perc > 0) %>%
     dplyr::arrange(desc(Mean_Perc))
