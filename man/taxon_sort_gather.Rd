@@ -10,7 +10,7 @@ taxon_sort_gather(df, n = 50, facet_var = NULL, ord_val = NULL,
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in wide format.}
 
-\item{n}{Number of OTUs to return.}
+\item{n}{Number of OTUs to return, 50 by default.}
 
 \item{facet_var}{Variable to be used for grouping and eventual faceting, possibly in \code{plot_ra}.}
 
@@ -21,7 +21,7 @@ taxon_sort_gather(df, n = 50, facet_var = NULL, ord_val = NULL,
 \item{tax_level}{Taxonomic level to join from \code{tax_df}. Defaults to Phylum.}
 }
 \value{
-A factor vector comprised of taxonomy label and OTU identifier, with levels that match the order of OTUs in \code{otu_vec}.
+A dataframe that has been aggregated and reshaped into long form.
 }
 \description{
 Transform data from wide to long, join a taxonomic level, aggregate and create summary statistics, and return n OTUs.
