@@ -1,6 +1,6 @@
 #' Join a dataframe with a taxonomy table.
 #'
-#' @param df Dataframe containing an OTU key column (resulting from a prior call to \code{\link[tidyr]{gather}) or alternatively numbered Otu columns, in which case \code{\link[tidyr]{gather} will be called to create an OTU key column. Defaults to \code{otu_df}.
+#' @param df Dataframe containing an OTU key column (resulting from a prior call to \code{\link[tidyr]{gather}}) or alternatively numbered Otu columns, in which case \code{\link[tidyr]{gather}} will be called to create an OTU key column. Defaults to \code{otu_df}.
 #' @param tax_df Taxonomy table. \code{\link{join_tax}} assumes that a column called OTU exists in \code{tax_df}. Defaults to \code{otu_good_taxonomy}.
 #' @param tax_levels Vector specifying which taxonomic levels to join from \code{tax_df}.
 #' @return A dataframe resulting from using \code{\link[dplyr]{inner_join}} on \code{df} and \code{tax_df}.
