@@ -4,7 +4,8 @@
 \alias{tsg_ind}
 \title{Transform data from wide to long, without aggregating individual samples.}
 \usage{
-tsg_ind(df, n = 50, ar_mean = FALSE, geo_mean = FALSE)
+tsg_ind(df, n = 50, ar_mean = FALSE, geo_mean = FALSE,
+  otu_vec = NULL)
 }
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in wide format.}
@@ -14,6 +15,8 @@ tsg_ind(df, n = 50, ar_mean = FALSE, geo_mean = FALSE)
 \item{ar_mean}{Boolean to indicate whether the arithmetic mean should be appended to the data.}
 
 \item{geo_mean}{Boolean to indicate whether the geometric mean should be appended to the data.}
+
+\item{otu_vec}{Character or factor vector of OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}}.}
 }
 \value{
 An unaggregated dataframe that has been reshaped into long form.
