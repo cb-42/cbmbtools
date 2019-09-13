@@ -4,17 +4,19 @@
 \alias{plot_ra}
 \title{Create an ordered relative abundance plot}
 \usage{
-plot_ra(df, df_obs = NULL, taxon = "OTU", title = "",
-  error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE,
-  seed = 123)
+plot_ra(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc",
+  title = "", error_bar = FALSE, facet_var = NULL, fill = NULL,
+  gtxt = FALSE, seed = 123)
 }
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
 This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.}
 
-\item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.}
+\item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.}
 
 \item{taxon}{Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?}
+
+\item{yvar}{Variable to use on the y-axis. Defaults to \code{Mean_Perc}.}
 
 \item{title}{String to use as plot title. Defaults to an empty string.}
 
@@ -24,7 +26,7 @@ This dataframe is typically the result of processing via \code{\link{taxon_sort_
 
 \item{fill}{Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.}
 
-\item{gtxt}{Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.}
+\item{gtxt}{Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.}
 
 \item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.}
 }
@@ -35,7 +37,7 @@ A plot created based on \code{df} and the specified parameters.
 Create an ordered relative abundance plot
 }
 \examples{
-plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
+plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage", facet_var = "Sample",
    fill = "Phylum", gtxt = T)
 
 plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",

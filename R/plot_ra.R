@@ -2,18 +2,19 @@
 #'
 #' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
 #'     This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.
-#' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer.
+#' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.
 #' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?
+#' @param yvar Variable to use on the y-axis. Defaults to \code{Mean_Perc}.
 #' @param title String to use as plot title. Defaults to an empty string.
 #' @param error_bar Boolean for whether to include an errorbar. If so, \code{df} should contain a column named SEM with this information.
 #' @param facet_var Variable to use for faceted plots. By default, no faceting will be used.
 #' @param fill Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.
-#' @param gtxt Boolean for whether to include a geom_text() layer in the plot which will display actual percentages. Not included by default.
+#' @param gtxt Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.
 #' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.
 #' @return A plot created based on \code{df} and the specified parameters.
 #' @export
 #' @examples
-#' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample",
+#' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage", facet_var = "Sample",
 #'    fill = "Phylum", gtxt = T)
 #'
 #' plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
@@ -26,17 +27,17 @@
 #'    title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
 #'    facet_var = "Day", fill = "Phylum")
 
-plot_ra <- function(df, df_obs = NULL, taxon = "OTU", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE, seed = 123) {
+plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE, seed = 123) {
   set.seed(seed)
 
   # account for fill, either by a taxonomy condition, or grey
   if(!is.null(fill)) { # controls all tax cases, and Sample (controls) (or presumably other columns that exist in data)
-    p <- ggplot(data = df, aes(y = Mean_Perc, x = .data[[taxon]])) +
+    p <- ggplot(data = df, aes(y = .data[[yvar]], x = .data[[taxon]])) +
       geom_col(aes(fill = .data[[fill]])) +
       labs(fill = fill)
   } # should fill be set to facet_var in cases where fill (e.g. taxonomy data) is null?
   else { # This is primarily aimed at cases where there is no fill or faceting
-    p <- ggplot(data = df, aes(y = Mean_Perc, x = .data[[taxon]])) +
+    p <- ggplot(data = df, aes(y = .data[[yvar]], x = .data[[taxon]])) +
       geom_col(fill = "grey")
   }
 
