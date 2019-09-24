@@ -9,7 +9,7 @@ load_shared(shared, thresh = 0.1)
 \arguments{
 \item{shared}{An opti_mcc.shared file resulting from processing via mothur.}
 
-\item{thresh}{Threshold used to determine whether any OTUs should be trimmed. Defaults to 0.1.}
+\item{thresh}{Threshold used to determine whether any OTUs should be trimmed from the dataset. If an OTU does not reach \code{thresh} at least once in a sample, the OTU will be removed. Default threshold is 0.1.}
 }
 \value{
 Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 \% of the population.
@@ -18,5 +18,5 @@ Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 \% of the p
 Reads in a file containing OTU count data and keeps only OTUs > 0.1 \% of the population.
 }
 \examples{
-load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
+load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared", thresh = .05)
 }
