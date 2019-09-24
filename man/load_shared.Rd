@@ -4,10 +4,12 @@
 \alias{load_shared}
 \title{Reads in a file containing OTU count data and keeps only OTUs > 0.1 \% of the population.}
 \usage{
-load_shared(shared)
+load_shared(shared, thresh = 0.1)
 }
 \arguments{
 \item{shared}{An opti_mcc.shared file resulting from processing via mothur.}
+
+\item{thresh}{Threshold used to determine whether any OTUs should be trimmed. Defaults to 0.1.}
 }
 \value{
 Returns a matrix containing OTU counts, trimmed to remove OTUs < 0.1 \% of the population.
