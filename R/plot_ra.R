@@ -13,7 +13,7 @@
 #' @param fill_pal An optional user-defined palette for maintaining consistent fill colors across RA plots. Best when combined with \code{phy_vec}.
 #' @param gtxt Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.
 #' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.
-#' @return A plot created based on \code{df} and the specified parameters.
+#' @return A ggplot created based on \code{df} and the specified parameters. It can be further modified with additional layers.
 #' @export
 #' @examples
 #' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage", facet_var = "Sample",
@@ -75,7 +75,12 @@ plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title 
   # Keep Phylum fill color consistent with other plots
   if(!is.null(phy_vec) & !is.null(fill_pal)) {
     fill_ord <- match(levels(df$Phylum), phy_vec)
-    p <- p + scale_fill_manual(values = fill_pal[fill_ord])
+    if(taxon!="Phylum") { # This is a temporary solution for x=OTU and needs further optimization
+      fill_lev = levels(df$Phylum)[na.omit(match(phy_vec, levels(df$Phylum)))[1:length(levels(df$Phylum))]]
+      p <- p + scale_fill_manual(values = fill_pal[fill_ord], breaks = fill_lev, labels = fill_lev)
+    } else {
+      p <- p + scale_fill_manual(values = fill_pal[fill_ord])
+    }
   }
 
   if(gtxt == TRUE) {
