@@ -3,12 +3,14 @@
 #' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
 #'     This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.
 #' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.
-#' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?
+#' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted? OTU by default.
 #' @param yvar Variable to use on the y-axis. Defaults to \code{Mean_Perc}.
 #' @param title String to use as plot title. Defaults to an empty string.
 #' @param error_bar Boolean for whether to include an errorbar. If so, \code{df} should contain a column named SEM with this information.
 #' @param facet_var Variable to use for faceted plots. By default, no faceting will be used.
-#' @param fill Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.
+#' @param fill Optional variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.
+#' @param phy_vec Optional vector containing the unique Phyla resulting from \code{\link{load_tax}}, likely following trimming. Combined with \code{fill_pal} this allows for a consistent color scheme across RA plots.
+#' @param fill_pal An optional user-defined palette for maintaining consistent fill colors across RA plots. Best when combined with \code{phy_vec}.
 #' @param gtxt Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.
 #' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.
 #' @return A plot created based on \code{df} and the specified parameters.
@@ -25,9 +27,9 @@
 #'
 #' plot_ra(df = phy_agg, df_obs = phy_obs, taxon = "Phylum",
 #'    title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
-#'    facet_var = "Day", fill = "Phylum")
+#'    facet_var = "Day", fill = "Phylum", phy_vec = phy_rank$Phylum, fill_pal = phy_pal)
 
-plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, gtxt = FALSE, seed = 123) {
+plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, phy_vec = NULL, fill_pal = NULL, gtxt = FALSE, seed = 123) {
   set.seed(seed)
 
   # account for fill, either by a taxonomy condition, or grey
@@ -69,6 +71,12 @@ plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title 
     scale_y_continuous(labels = dollar_format(suffix = "%", prefix = "")) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5), legend.position = "top") + # angles axis text; repositions legend
     labs(title = title, x = xlabel, y = "% Relative Abundance")
+
+  # Keep Phylum fill color consistent with other plots
+  if(!is.null(phy_vec) & !is.null(fill_pal)) {
+    fill_ord <- match(levels(df$Phylum), phy_vec)
+    p <- p + scale_fill_manual(values = fill_pal[fill_ord])
+  }
 
   if(gtxt == TRUE) {
     # this helps show OTUs have a value of 0; related to a knit issue that shows sliver of color when OTUs actually have a true value of 0

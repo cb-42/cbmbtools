@@ -6,7 +6,7 @@
 \usage{
 plot_ra(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc",
   title = "", error_bar = FALSE, facet_var = NULL, fill = NULL,
-  gtxt = FALSE, seed = 123)
+  phy_vec = NULL, fill_pal = NULL, gtxt = FALSE, seed = 123)
 }
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
@@ -14,7 +14,7 @@ This dataframe is typically the result of processing via \code{\link{taxon_sort_
 
 \item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.}
 
-\item{taxon}{Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted?}
+\item{taxon}{Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted? OTU by default.}
 
 \item{yvar}{Variable to use on the y-axis. Defaults to \code{Mean_Perc}.}
 
@@ -24,7 +24,11 @@ This dataframe is typically the result of processing via \code{\link{taxon_sort_
 
 \item{facet_var}{Variable to use for faceted plots. By default, no faceting will be used.}
 
-\item{fill}{Variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.}
+\item{fill}{Optional variable to use for fill color. Common use cases include filling by Phylum, Sample_name, or Sample_type.}
+
+\item{phy_vec}{Optional vector containing the unique Phyla resulting from \code{\link{load_tax}}, likely following trimming. Combined with \code{fill_pal} this allows for a consistent color scheme across RA plots.}
+
+\item{fill_pal}{An optional user-defined palette for maintaining consistent fill colors across RA plots. Best when combined with \code{phy_vec}.}
 
 \item{gtxt}{Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.}
 
@@ -48,5 +52,5 @@ plot_ra(df = otu_agg, df_obs = otu_obs, title = "Feces Samples, Ordered by Day 0
 
 plot_ra(df = phy_agg, df_obs = phy_obs, taxon = "Phylum",
    title = "Feces Samples, Aggregated by Phylum, Ordered by Day 0",
-   facet_var = "Day", fill = "Phylum")
+   facet_var = "Day", fill = "Phylum", phy_vec = phy_rank$Phylum, fill_pal = phy_pal)
 }
