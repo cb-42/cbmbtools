@@ -20,7 +20,7 @@ load_tax <- function(tax_file, otu_good=NULL) {
   # Note, issues with tibble/data_frame eliminating rownames (an issue if using these to subset later on, such as in factor relabeling)
   # A rework of dependent code could make use of the fact that rownames are included in column1
 
-  otu_taxonomy <- data.frame(OTU = rownames(tax1), Size = tax1[,1], tax2)
+  otu_taxonomy <- data.frame(OTU = rownames(tax1), Size = tax1[,1], tax2, stringsAsFactors = FALSE) # keeps OTU as chr rather than factor
 
   rownames(otu_taxonomy) <- rownames(tax1) # correct rownames that were stripped out by map_df()
 
