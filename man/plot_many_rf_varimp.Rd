@@ -4,19 +4,21 @@
 \alias{plot_many_rf_varimp}
 \title{Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{\link{many_rf}}.}
 \usage{
-plot_many_rf_varimp(rf_list, tax = NULL)
+plot_many_rf_varimp(rf_list, tax = NULL, n = 50)
 }
 \arguments{
+\item{rf_list}{A list containing the random forest models.}
+
 \item{tax}{Taxonomy table. If \code{NULL}, no taxonomic labels will be added.}
 
-\item{rflist}{A list containing the random forest models.}
+\item{n}{Number of features to display in the resulting plot.}
 }
 \value{
-A boxplot based on \code{rflist} and \code{tax}.
+A boxplot based on \code{rf_list} and \code{tax}.
 }
 \description{
 Using a list of random forest models, create ordered boxplots of variable importance. The plot title is created dynamically from model attributes. This function is designed to be used in conjunction with \code{\link{many_rf}}.
 }
 \examples{
-plot_many_rf_varimp(rflist = rf_vfd_otu_100, tax = otu_good_taxonomy)
+plot_many_rf_varimp(rf_list = rf_vfd_otu_100, tax = otu_good_taxonomy)
 }
