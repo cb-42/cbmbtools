@@ -22,7 +22,7 @@ tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NUL
     exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
   }
 
-  otu_order <- rank_otus(df)
+  otu_order <- rank_tax(df)
 
   if (ar_mean | geo_mean) {
     sample_names <- df$Sample_name
@@ -46,7 +46,7 @@ tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NUL
     #   sample_names <- forcats::fct_relevel(sample_names, sample_names[length(sample_names)])
     # }
 
-    temp <- temp[colMeans(temp) > 0] # remove 0-valued OTUs - could be determined by limiting rank_otus to colMeans() > 0
+    temp <- temp[colMeans(temp) > 0] # remove 0-valued OTUs - could be determined by limiting rank_tax to colMeans() > 0
     df <- cbind(Sample_name = forcats::fct_inorder(sample_names), temp) # maintains rows in the original order, with means appended to end
   } else { # non-aggregation case
     if(!is.null(otu_vec)) {
