@@ -7,8 +7,8 @@
 #' @return A ranked character vector based on the mean abundance corresponding to levels in \code{tax_df[, tax_level]}.
 #' @export
 #' @examples
-#' rank_otus(df = dplyr::filter(otu_df, Experiment == "Amx"))
-#' rank_otus(phy_filt, tax_level = "Phylum")
+#' rank_tax(df = dplyr::filter(otu_df, Experiment == "Amx"))
+#' rank_tax(phy_filt, tax_level = "Phylum")
 
 rank_tax <- function(df, desc = TRUE, tax_level = "OTU", tax_df = otu_good_taxonomy) {
   if (tax_level == "OTU") {

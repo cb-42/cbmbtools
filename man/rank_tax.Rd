@@ -23,6 +23,6 @@ A ranked character vector based on the mean abundance corresponding to levels in
 Generate a ranked vector of OTUs or other taxonomic level.
 }
 \examples{
-rank_otus(df = dplyr::filter(otu_df, Experiment == "Amx"))
-rank_otus(phy_filt, tax_level = "Phylum")
+rank_tax(df = dplyr::filter(otu_df, Experiment == "Amx"))
+rank_tax(phy_filt, tax_level = "Phylum")
 }
