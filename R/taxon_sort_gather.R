@@ -29,18 +29,18 @@ taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_
   if(!is.null(facet_var)) {
     if(!is.null(ord_val)) { # OTUs should be ordered according to rank within specified facet level
       ord_df <- dplyr::filter(df, !!fv == ord_val)
-      otu_order <- rank_otus(ord_df)
+      otu_order <- rank_tax(ord_df)
       df <- data.frame(dplyr::select_if(df, !(stringr::str_detect(colnames(otu_df), "Otu"))), df[,otu_order[1:n]]) %>%
         join_tax(tax_levels = tax_level, tax_df = tax_df) %>%
         dplyr::group_by(OTU, !!tl, !!fv)
     } else { # Facets, ordered by overall mean
-      otu_order <- rank_otus(df)
+      otu_order <- rank_tax(df)
       df <- data.frame(dplyr::select_if(df, !(stringr::str_detect(colnames(otu_df), "Otu"))), df[,otu_order[1:n]]) %>%
         join_tax(tax_levels = tax_level, tax_df = tax_df) %>%
         dplyr::group_by(OTU, !!tl, !!fv)
     }
-  } else { # Not facets, ordered by overall mean
-    otu_order <- rank_otus(df)
+  } else { # No faceting, ordered by overall mean
+    otu_order <- rank_tax(df)
     df <- data.frame(dplyr::select_if(df, !(stringr::str_detect(colnames(otu_df), "Otu"))), df[,otu_order[1:n]]) %>%
       join_tax(tax_levels = tax_level, tax_df = tax_df) %>%
       dplyr::group_by(OTU, !!tl)
