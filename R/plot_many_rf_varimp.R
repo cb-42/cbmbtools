@@ -13,44 +13,44 @@ plot_many_rf_varimp <- function(rf_list, tax = NULL, n = 50) {
 
   # extract importance metrics -- use %IncMSE only (gini/node purity can be prone to bias)
   if (rf_list[[1]]$type == "classification") {
-    tmp_lst <- purrr::map(rf_list, ~ {.[["importance"]][,3]})
-    tmp <- unlist(tmp_lst) %>%
+    fi_lst <- purrr::map(rf_list, ~ {.[["importance"]][,3]})
+    fi_df <- unlist(fi_lst) %>%
       data.frame(Feature = names(.), MeanDecreaseAccuracy = .)
   } else if (rf_list[[1]]$type == "regression") {
-    tmp_lst <- purrr::map(rf_list, ~ {.[["importance"]][,1]})
-    tmp <- unlist(tmp_lst) %>%
+    fi_lst <- purrr::map(rf_list, ~ {.[["importance"]][,1]})
+    fi_df <- unlist(fi_lst) %>%
       data.frame(Feature = names(.), IncMSE = .)
   } else {
     stop("Model type not recognized. Use a classification or regression model.")
   }
 
-  meas <- colnames(tmp)[2]
+  meas <- colnames(fi_df)[2]
 
   # top n features by mean meas
-  top_feat <- tmp %>% dplyr::group_by(Feature) %>%
+  top_feat <- fi_df %>% dplyr::group_by(Feature) %>%
     dplyr::summarize(!!meas := mean(.data[[meas]])) %>%
     dplyr::arrange(desc(.data[[meas]])) %>%
     head(n) %>%
     droplevels()
 
   # keep only top n features arranged by mean meas
-  tmp <- dplyr::filter(tmp, Feature %in% top_feat$Feature) %>%
+  fi_df <- dplyr::filter(fi_df, Feature %in% top_feat$Feature) %>%
     droplevels() # remove unused levels
 
   # reorder levels by mean
-  tmp$Feature <- forcats::fct_reorder(tmp$Feature, tmp[,2], .fun = mean, .desc = TRUE)
+  fi_df$Feature <- forcats::fct_reorder(fi_df$Feature, fi_df[,2], .fun = mean, .desc = TRUE)
 
   # use paste_tax() to relabel Feature levels (designed for use at Genus/OTU level)
   if(!is.null(tax)) {
-    # levels(tmp$Feature) <- cbmbtools::paste_tax(levels(tmp$Feature), tax)
-    levs <- levels(tmp$Feature)
-    levels(tmp$Feature)[stringr::str_which(levs, "Otu")] <- levels(cbmbtools::paste_tax(levs[stringr::str_which(levs, "Otu")], tax))
+    # levels(fi_df$Feature) <- cbmbtools::paste_tax(levels(fi_df$Feature), tax)
+    levs <- levels(fi_df$Feature)
+    levels(fi_df$Feature)[stringr::str_which(levs, "Otu")] <- levels(cbmbtools::paste_tax(levs[stringr::str_which(levs, "Otu")], tax))
   }
 
-  ggplot(tmp, aes(x = Feature, y = tmp[,2])) +
+  ggplot(fi_df, aes(x = Feature, y = fi_df[,2])) +
     geom_boxplot(outlier.alpha = .4) +
     theme_bw() +
-    labs(x = "Feature", y = meas, title = paste0("Feature Importance: ", meas), subtitle = paste0("Model: ", mod_name, "\nRuns: ", length(rf_list), ", mtry: ", rf_list[[1]]$mtry)) +
+    labs(y = meas, title = paste0("Feature Importance: ", meas), subtitle = paste0("Model: ", mod_name, "\nRuns: ", length(rf_list), ", mtry: ", rf_list[[1]]$mtry)) +
     coord_flip() +
-    scale_x_discrete(limits = rev(levels(tmp$Feature)))
+    scale_x_discrete(limits = rev(levels(fi_df$Feature)))
 }
