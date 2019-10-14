@@ -4,7 +4,7 @@ General purpose package containing useful functions for microbiome analysis pipe
 ## Installation
 First, install the devtools package (if it isn't already) and then load it.  
 ```
-install.packages("devtools")
+if (!require(devtools)) install.packages("devtools")
 library(devtools)
 ```
 Next, install and load cbmbtools.  
