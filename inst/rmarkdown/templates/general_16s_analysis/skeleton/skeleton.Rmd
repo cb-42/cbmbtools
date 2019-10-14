@@ -31,16 +31,21 @@ library(tidyverse)      # ggplot, dplyr, purrr, forcats, stringr... and other pa
 library(scales)         # used in formatting relative abundance % labels; dollar_format()
 library(knitr)          # necessary for kable, for displaying nicer tables in html/pdf output
 library(RColorBrewer)   # for generating custom palettes
+# library(grid)         
+# library(gridExtra)      # grid.arrange(); plot & table arranging
 # library(gganimate)      # useful for comparing data across time points or changes in a single categorical variable
 
-# III. analysis packages
+# III. machine learning & analysis packages
 library(vegan)          # decostand(), metaMDS(), scores(), rda(), ordispider(), adonis()
 library(MASS)           # isoMDS(); masks dplyr::select()
 library(mvabund)
+# library(randomForest)   # randomForest()
 # library(caret)          # vast support for all flavors of predictive models
 
 # IV. functions for automating and streamlining workflow
-devtools::install_github("https://github.com/cb-42/cbmbtools")
+# if (!require(devtools)) install.packages("devtools")
+# devtools::install_github("https://github.com/cb-42/cbmbtools")
+# devtools::update_packages("cbmbtools")
 library(cbmbtools)
 ```
 
@@ -102,3 +107,78 @@ otu_df <- data.frame(decostand(otu_good, "total") * 100, Sample_name = row.names
 ```
 
 After the data was processed using mothur(v.1.39.4), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. Next, any OTU count that made up less than .1% of the total OTU count for any given sample was set to 0. Subsequently, any OTUs which had a value of 0 for sum of counts across all samples were removed from the data, leaving `r dim(otu_good)[2]` OTUs for further analysis. There are `r dim(otu_good)[1]` samples when including all controls and experiments.
+
+```{r summary_table}
+# Use knitr::kable to generate a table summarizing key information about the experiment, e.g. number of samples by treatments
+```
+
+\newpage
+# II. Analysis of controls
+## 2.1 Mock
+[Descriptive text here]
+
+```{r analyze_mock}
+# example code
+mock_gg <- dplyr::filter(otu_df, Experiment == "Zymo_Mock") %>%
+  tsg_ind(geo_mean = TRUE, ar_mean = TRUE)
+```
+
+```{r plot_mock, fig.width = 12, fig.height = 12}
+plot_ra(df = mock_gg, title = "Cross-Comparison of Mock Control Replicates", facet_var = "Sample_name", fill = "Sample_name", yvar = "Percentage")
+```
+
+\newpage
+## 2.2 Water
+[Descriptive text here] 
+
+```{r analyze_water}
+# example code
+water_gg <- dplyr::filter(otu_df, Experiment == "Water_Neg") %>%
+  tsg_ind(geo_mean = TRUE, ar_mean = TRUE)
+```
+
+```{r plot_water, fig.width = 12, fig.height = 12}
+plot_ra(df = water_gg, title = "Cross-Comparison of Negative Water Control Replicates", facet_var = "Sample_name", fill = "Sample_name", yvar = "Percentage")
+```
+
+\newpage
+## 2.3 AE
+[Descriptive text here] 
+
+```{r analyze_ae}
+ae_gg <- filter(otu_df, Experiment == "AE") %>%
+  tsg_ind(geo_mean = TRUE, ar_mean = TRUE)
+```
+
+```{r plot_ae, fig.width = 12, fig.height = 12}
+plot_ra(df = ae_gg, title = "Cross-Comparison of AE Control Replicates", facet_var = "Sample_name", fill = "Sample_name", yvar = "Percentage")
+```
+
+\newpage
+## 2.4 Empty wells
+[Descriptive text here]
+
+```{r analyze_empty}
+empty_gg <- filter(otu_df, Experiment == "Empty") %>%
+  tsg_ind(geo_mean = TRUE, ar_mean = TRUE)
+```
+
+```{r plot_empty, fig.width = 12, fig.height = 12}
+plot_ra(df = empty_gg, title = "Cross-Comparison of Empty Wells", facet_var = "Sample_name", fill = "Sample_name", yvar = "Percentage")
+```
+
+\newpage
+# III. PCA  
+[Descriptive text here]
+
+```{r pca_prep}
+# example: filter out controls
+otu_good2 <- dplyr::filter(otu_df, !(Experiment %in% c("AE", "Empty", "IsoCtrl", "Water_Neg", "Zymo_Mock"))) %>%
+  droplevels() # remove levels that are no longer present due to filtering
+
+# PCA of all data (non-control)
+otu_good2_hel <- decostand(dplyr::select(otu_good2, contains("Otu")), "hellinger")
+otu_good2_pca <- rda(otu_good2_hel)
+
+# (summary(otu_good2_pca)) # 0.3006 0.10995 0.06362 proportion explained by first 3 axes
+```
