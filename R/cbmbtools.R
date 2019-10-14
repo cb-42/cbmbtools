@@ -1,6 +1,6 @@
 #' cbmbtools: General purpose package containing functions and templates for microbiome analysis pipelines
 #'
-#' The cbmbtools package provides several categories of functions for data import, wrangling, and plotting.
+#' The cbmbtools package provides several categories of functions for data import, wrangling, and plotting. This workflow is primarily geared towards data resulting from processing via \href{https://www.mothur.org/}{mothur}.
 #'
 #'
 #' @section data import:
