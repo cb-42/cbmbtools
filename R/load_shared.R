@@ -10,7 +10,7 @@
 
 load_shared <- function(shared, otu_vec = NULL, thresh = 0.1) {
   # Read in OTU counts
-  otu_raw <- read.table(shared, row.names = 2, header = T)
+  otu_raw <- read.table(shared, row.names = 2, header = TRUE)
 
   # Label and numOtus columns contain the same info for all rows and should be removed
   otu_trim <- otu_raw[, -c(1:2)]

@@ -11,7 +11,7 @@
 load_tax <- function(tax_file, otu_good=NULL) {
   # II. Read in taxonomy data
   # This requires 2 separate calls due to the use of tab and semicolon separators
-  tax1 <- read.table(tax_file, sep = "\t", row.names = 1, header = T, colClasses = c("character", "numeric", "character"))
+  tax1 <- read.table(tax_file, sep = "\t", row.names = 1, header = TRUE, colClasses = c("character", "numeric", "character"))
   tax2 <- read.table(tax_file, sep = ";", skip = 1, col.names = c("", "Phylum", "Class", "Order", "Family", "Genus", "")) %>%
     dplyr::select(-c(1, 7)) %>%
     purrr::map_df(stringr::str_replace, "\\(.*.\\)", "") %>% # removes (num) at end of Phylum:Genus names
