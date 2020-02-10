@@ -68,7 +68,7 @@ plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title 
                       stringr::str_detect(taxon, "Genus") ~ "Genera")
 
   p <- p + theme_bw() + # added due to pdf knitting losing global ggtheme
-    scale_y_continuous(labels = scales::dollar_format(suffix = "%", prefix = "")) +
+    scale_y_continuous(labels = scales::unit_format(suffix = "%"))
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5), legend.position = "top") + # angles axis text; repositions legend
     labs(title = title, x = xlabel, y = "% Relative Abundance")
 
