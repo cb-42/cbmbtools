@@ -13,7 +13,7 @@ many_rf(df, y, nforest = 100, seed = 1234, ...)
 
 \item{nforest}{Number of random forests to create, 100 by default.}
 
-\item{seed}{Value passed to \code{\link{set.seed}}, for ensuring reproducibility. Although the default is 1234, best practice would be to vary the seed, perhaps by project, or even by model.}
+\item{seed}{Numeric value passed to \code{\link{set.seed}}, for ensuring reproducibility. Although the default is 1234, best practice would be to vary the seed, perhaps by project, or even by model.}
 
 \item{...}{Optional parameters to pass to \code{\link[randomForest]{randomForest}}.}
 }

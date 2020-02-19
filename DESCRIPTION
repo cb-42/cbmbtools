@@ -1,6 +1,6 @@
 Package: cbmbtools
 Title: CB's Collection of Microbiome Analysis Functions
-Version: 0.0.0.9030
+Version: 0.0.0.9031
 Authors@R: 
     person(given = "Christopher",
            family = "Brown",
@@ -26,4 +26,6 @@ Imports:
   tibble,
   tidyr,
   vegan
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
+Suggests: 
+    testthat (>= 2.1.0)
