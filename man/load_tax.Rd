@@ -12,7 +12,7 @@ load_tax(tax_file, otu_good = NULL)
 \item{otu_good}{An optional matrix containing trimmed OTU count data.}
 }
 \value{
-Returns a dataframe containing taxonomy data.
+Returns a dataframe containing taxonomy data, optionally subset by the OTUs within `otu_good`.
 }
 \description{
 Reads in a file containing taxonomy data and performs basic processing.

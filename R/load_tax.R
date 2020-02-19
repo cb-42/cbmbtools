@@ -2,7 +2,7 @@
 #'
 #' @param tax_file A cons.taxonomy file resulting from processing via mothur.
 #' @param otu_good An optional matrix containing trimmed OTU count data.
-#' @return Returns a dataframe containing taxonomy data.
+#' @return Returns a dataframe containing taxonomy data, optionally subset by the OTUs within `otu_good`.
 #' @export
 #' @examples
 #' load_tax("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
@@ -26,10 +26,9 @@ load_tax <- function(tax_file, otu_good=NULL) {
 
   if(!is.null(otu_good)) {
     # subset to keep only the OTUs over 0.1% of the population
-    otu_good_taxonomy <- otu_taxonomy[otu_taxonomy$OTU %in% colnames(otu_good), ]
+    otu_good_taxonomy <- otu_taxonomy[otu_taxonomy$OTU %in% colnames(otu_good), ] %>%
+      droplevels() # Account for factor levels for values that no longer exist.
     rownames(otu_good_taxonomy) <- intersect(rownames(otu_taxonomy), colnames(otu_good))
-    # converting to strictly data.frame, due to issues with tibble removing rownames
-    otu_good_taxonomy <- as.data.frame(otu_good_taxonomy)
     return(otu_good_taxonomy)
   }
     return(otu_taxonomy)
