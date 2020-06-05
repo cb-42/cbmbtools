@@ -4,10 +4,17 @@
 \alias{agg_otus}
 \title{Aggregate OTU data by another taxonomic level.}
 \usage{
-agg_otus(df = otu_df, tax_df = otu_good_taxonomy, taxon = "Phylum")
+agg_otus(
+  df = otu_df,
+  sample_col = NULL,
+  tax_df = otu_good_taxonomy,
+  taxon = "Phylum"
+)
 }
 \arguments{
 \item{df}{A dataframe containing OTU data, presumed to be normalized, although it could be done for raw count data as well. Defaults to \code{otu_df}.}
+
+\item{sample_col}{An optional vector, specifying the column in \code{df} which contains Sample names. If none is provided and a Sample_name column does not exist, rownames will be used.}
 
 \item{tax_df}{Taxonomy table. \code{agg_otus()} assumes that a column called OTU exists in \code{tax_df}. Defaults to \code{otu_good_taxonomy}.}
 
