@@ -5,6 +5,8 @@
 #' @param ar_mean Boolean to indicate whether the arithmetic mean should be appended to the data.
 #' @param geo_mean Boolean to indicate whether the geometric mean should be appended to the data.
 #' @param otu_vec Character or factor vector of OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}}.
+#' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
+#' @param tax_level Taxonomic level(s) to join from \code{tax_df}. Defaults to NULL, in which case no join occurs.
 #' @return An unaggregated dataframe that has been reshaped into long form.
 #' @seealso \code{\link{taxon_sort_gather}}
 #' @export
@@ -16,7 +18,7 @@
 #'     tsg_ind()
 
 # work in progress
-tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NULL) {
+tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NULL, tax_df = otu_good_taxonomy, tax_level = NULL) {
   # Geometric mean helper: https://stackoverflow.com/questions/2602583/geometric-mean-is-there-a-built-in
   tsg_geo <- function(x, na.rm = TRUE) {
     exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
@@ -59,8 +61,15 @@ tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NUL
     }
   }
 
-  # reformats the otu data from wide to long, must include factor_key for factor relabeling
-  df <- tidyr::gather(df, key = OTU, value = Percentage, -stringr::str_which(colnames(df), "Otu", negate = TRUE), factor_key = TRUE)
+  # Reformats the otu data from wide to long, must include factor_key for factor relabeling
+  # Optionally joins taxonomic level(s)
+  if(!is.null(tax_level)) { # Case for joining Phylum, for example, to an individual sample RA plot
+    df <- df %>% join_tax(tax_levels = tax_level, tax_df = tax_df)
+  } else { # Don't join tax_table
+    df <- tidyr::gather(df, key = OTU, value = Percentage, -stringr::str_which(colnames(df), "Otu", negate = TRUE), factor_key = TRUE)
+  }
+
+  # df <- tidyr::gather(df, key = OTU, value = Percentage, -stringr::str_which(colnames(df), "Otu", negate = TRUE), factor_key = TRUE)
   # df_gg <- dplyr::filter(df_gg, OTU %in% dplyr::filter(df_gg, Sample_name == "Arith_Mean", Percentage > 0)$OTU) # this trim should occur before gathering
   levels(df$OTU) <- paste_tax(levels(df$OTU))
 
