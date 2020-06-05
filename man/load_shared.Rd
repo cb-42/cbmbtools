@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_shared.R
 \name{load_shared}
 \alias{load_shared}
-\title{Reads in a file containing OTU count data and keeps only OTUs present above a specified \% of the population in at least one sample.}
+\title{Reads in a file containing OTU count data and keeps OTUs which meet or exceed a specified \% abundance in at least one sample.}
 \usage{
 load_shared(shared, otu_vec = NULL, thresh = 0.1)
 }
@@ -17,7 +17,7 @@ load_shared(shared, otu_vec = NULL, thresh = 0.1)
 Returns a matrix containing OTU counts, (optionally) without OTUs contained in \code{otu_vec} and also trimmed to remove OTUs that did not cross the specified percentage in at least one sample.
 }
 \description{
-Reads in a file containing OTU count data and keeps only OTUs present above a specified \% of the population in at least one sample.
+Reads in a file containing OTU count data and keeps OTUs which meet or exceed a specified \% abundance in at least one sample.
 }
 \examples{
 load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared", thresh = .05)

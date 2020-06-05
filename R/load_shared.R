@@ -1,4 +1,4 @@
-#' Reads in a file containing OTU count data and keeps only OTUs present above a specified \% of the population in at least one sample.
+#' Reads in a file containing OTU count data and keeps OTUs which meet or exceed a specified \% abundance in at least one sample.
 #'
 #' @param shared An opti_mcc.shared file resulting from processing via mothur.
 #' @param otu_vec An optional vector containing OTUs to be excluded, prior to trimming. This could be obtained from extracting a subset of OTUs from the result of \code{\link{load_tax}}.
