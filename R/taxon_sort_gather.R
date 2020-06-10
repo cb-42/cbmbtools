@@ -5,7 +5,7 @@
 #' @param facet_var Variable to be used for grouping and eventual faceting, possibly in \code{plot_ra}.
 #' @param ord_val Level with the \code{facet_var} to be used for ranking OTUs.
 #' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
-#' @param tax_level Taxonomic level to join from \code{tax_df}. Defaults to Phylum.
+#' @param tax_level Taxonomic level to join from \code{tax_df}, the levels within which will be used for grouping. Defaults to Phylum.
 #' @return A dataframe that has been aggregated and reshaped into long form.
 #' @export
 #' @examples

@@ -4,8 +4,14 @@
 \alias{taxon_sort_gather}
 \title{Transform data from wide to long, join a taxonomic level, aggregate and create summary statistics, and return n OTUs.}
 \usage{
-taxon_sort_gather(df, n = 50, facet_var = NULL, ord_val = NULL,
-  tax_df = otu_good_taxonomy, tax_level = "Phylum")
+taxon_sort_gather(
+  df,
+  n = 50,
+  facet_var = NULL,
+  ord_val = NULL,
+  tax_df = otu_good_taxonomy,
+  tax_level = "Phylum"
+)
 }
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in wide format.}
@@ -18,7 +24,7 @@ taxon_sort_gather(df, n = 50, facet_var = NULL, ord_val = NULL,
 
 \item{tax_df}{Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.}
 
-\item{tax_level}{Taxonomic level to join from \code{tax_df}. Defaults to Phylum.}
+\item{tax_level}{Taxonomic level to join from \code{tax_df}, the levels within which will be used for grouping. Defaults to Phylum.}
 }
 \value{
 A dataframe that has been aggregated and reshaped into long form.
