@@ -12,17 +12,16 @@ load_tax <- function(tax_file, otu_good=NULL) {
   # II. Read in taxonomy data
   # This requires 2 separate calls due to the use of tab and semicolon separators
   tax1 <- read.table(tax_file, sep = "\t", row.names = 1, header = TRUE, colClasses = c("character", "numeric", "character"))
-  tax2 <- read.table(tax_file, sep = ";", skip = 1, col.names = c("", "Phylum", "Class", "Order", "Family", "Genus", "")) %>%
+  tax2 <- read.table(tax_file, sep = ";", skip = 1, col.names = c("", "Phylum", "Class", "Order", "Family", "Genus", ""), stringsAsFactors = FALSE) %>%
     dplyr::select(-c(1, 7)) %>%
-    purrr::map_df(stringr::str_replace, "\\(.*.\\)", "") %>% # removes (num) at end of Phylum:Genus names
-    purrr::map_df(as.factor)
+    purrr::map_df(stringr::str_replace, "\\(.*.\\)", "") %>% # removes (num) at end of Phylum:Genus names, coerces factor columns to chr
+    purrr::map_df(as.factor) # recreate factors
 
-  # Note, issues with tibble/data_frame eliminating rownames (an issue if using these to subset later on, such as in factor relabeling)
+  # Note: tibble/data_frame eliminate rownames (an issue if using these to subset later on, such as in factor relabeling)
   # A rework of dependent code could make use of the fact that rownames are included in column1
 
   otu_taxonomy <- data.frame(OTU = rownames(tax1), Size = tax1[,1], tax2, stringsAsFactors = FALSE) # keeps OTU as chr rather than factor
-
-  rownames(otu_taxonomy) <- rownames(tax1) # correct rownames that were stripped out by map_df()
+  rownames(otu_taxonomy) <- rownames(tax1) # insert rownames, for use with vegan functions and plot()
 
   if(!is.null(otu_good)) {
     # subset to keep only the OTUs over 0.1% of the population
