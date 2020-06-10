@@ -25,5 +25,5 @@ export_norm_tax <- function(norm_df = otu_df, tax = otu_good_taxonomy, ctrl_vec 
   readr::write_csv(norm_df, path = norm_file)
 
   # write.csv() is used to maintain rownames
-  write.csv(data.frame(t(tax[-1:-2])), file = tax_file)
+  write.csv(data.frame(t(tax[-1:-2]), stringsAsFactors = FALSE), file = tax_file)
 }

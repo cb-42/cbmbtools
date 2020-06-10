@@ -15,11 +15,11 @@ plot_many_rf_varimp <- function(rf_list, tax = NULL, n = 50) {
   if (rf_list[[1]]$type == "classification") {
     fi_lst <- purrr::map(rf_list, ~ {.[["importance"]][,3]})
     fi_df <- unlist(fi_lst) %>%
-      data.frame(Feature = names(.), MeanDecreaseAccuracy = .)
+      data.frame(Feature = names(.), MeanDecreaseAccuracy = ., stringsAsFactors = FALSE)
   } else if (rf_list[[1]]$type == "regression") {
     fi_lst <- purrr::map(rf_list, ~ {.[["importance"]][,1]})
     fi_df <- unlist(fi_lst) %>%
-      data.frame(Feature = names(.), IncMSE = .)
+      data.frame(Feature = names(.), IncMSE = ., stringsAsFactors = FALSE)
   } else {
     stop("Model type not recognized. Use a classification or regression model.")
   }

@@ -23,7 +23,7 @@ list_paired_fastq <- function(dir_in, f_out, mothur = TRUE) {
   }
   else {
     df <- data.frame(filename1 = grep("_R1_", file_list, value = TRUE),
-                     filename2 = grep("_R2_", file_list, value = TRUE))
+                     filename2 = grep("_R2_", file_list, value = TRUE), stringsAsFactors = FALSE)
     readr::write_csv(df, path = f_out)
   }
 }
