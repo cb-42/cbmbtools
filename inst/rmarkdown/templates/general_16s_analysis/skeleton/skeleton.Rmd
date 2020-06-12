@@ -1,7 +1,7 @@
 ---
 title: "Untitled 16S Analysis"
 author: "Christopher A. Brown"
-date: "July 25, 2019"
+date: "June 12, 2020"
 output: pdf_document
 ---
 ---
@@ -47,6 +47,7 @@ library(mvabund)
 # devtools::install_github("https://github.com/cb-42/cbmbtools")
 # devtools::update_packages("cbmbtools")
 library(cbmbtools)
+library(testthat) # expect_identical() and related functions are useful for ensuring custom functions return expected output
 ```
 
 # I. Data Preparation
@@ -54,9 +55,15 @@ library(cbmbtools)
 ```{r load_16s, message = FALSE, include = FALSE}
 # For ease of use, place the processed 16S data files of interest into the same directory as your current RStudio project
 
+# I. Bacteria_unclassified removal (can be skipped if desired); Read in cons.taxonomy
+# ___ Bacteria_unclassified of ___ total untrimmed OTUs (trim = .05%) 
+otu_taxonomy <- load_tax("data.cons.taxonomy")
+rem_bact <- as.character(otu_taxonomy[otu_taxonomy$Genus == "Bacteria_unclassified", "OTU"])
+
 # Basic processing with selection of OTUs > 0.1 % of the population
-# I. Read in opti_mcc.shared
-otu_good <- load_shared(shared = "miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
+# II. Read in opti_mcc.shared file
+otu_good <- load_shared(shared = "data.shared")
+# otu_good <- load_shared(shared = "data.shared", otu_vec = rem_bact, thresh = 0.05)
 
 # Trim _S from end of rownames(otu_good); note that it may be useful to keep these well identifiers in some analyses
 rownames(otu_good) <- str_remove(rownames(otu_good), "_S\\d+")
@@ -64,9 +71,10 @@ rownames(otu_good) <- str_remove(rownames(otu_good), "_S\\d+")
 # It's a good idea to inspect the data regularly with tools such as dim(), str(), head(), tail(), summary()... This will help in catching errors earlier
 dim(otu_good) # dim(otu_good)[1] observations (samples) x dim(otu_good)[2] features (OTUs above .1% population threshold)
 
-# II. Read in cons.taxonomy
-otu.good.taxonomy <- load_tax("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy", otu_good = otu_good)
-dim(otu.good.taxonomy)
+# III. Subset otu_taxonomy to retain good/trimmed OTUs only
+otu_good_taxonomy <- droplevels(otu_taxonomy[colnames(otu_good), ])
+
+# otu_good_bact_un <- load_shared(shared = "data.shared", thresh = 0.05) # shared w/o bact_un removal, for comparison
 ```
 
 ```{r metadata_wrangling, include = FALSE}
@@ -76,40 +84,86 @@ dim(otu.good.taxonomy)
 otu_df <- data.frame(decostand(otu_good, "total") * 100, Sample_name = row.names(otu_good), stringsAsFactors = FALSE) %>%
   # Create Experiment from first string of characters prior to first "_"
   mutate(Experiment = factor(case_when(str_detect(Sample_name, "Exp\\d") ~ str_extract(Sample_name, "Exp\\d"),
-                                       str_detect(Sample_name, "^AE_") ~ "AE",
-                                       str_detect(Sample_name, "^empty_") ~ "Empty",
+                                       str_detect(Sample_name, "^AE\\d$") ~ "AE",
+                                       str_detect(Sample_name, "^empty_|^Blank") ~ "Empty",
                                        str_detect(Sample_name, "^IsoCtrl_") ~ "IsoCtrl",
-                                       str_detect(Sample_name, "^Water|^WATER") ~ "WaterNeg",
-                                       str_detect(Sample_name, "^Mock") ~ "Mock"),
+                                       str_detect(Sample_name, "^Water|^WATER|^WaterNeg") ~ "WaterNeg",
+                                       str_detect(Sample_name, "^Mock|^ZymoMock") ~ "Mock"),
                              levels = c("Exp1", "Exp2", "AE", "Empty", "IsoCtrl", "WaterNeg", "Mock"))
          ) %>%
   # Create Day; account for empty_D1 and empty_D2 which refer to wells and not days
   mutate(Day = factor(case_when(str_detect(Sample_name, "_D\\d+_") & Experiment != "Empty" ~ str_extract(Sample_name, "D\\d+"))
                       ) # sum(is.na(otu_df$Day)) returns __ (as expected, controls have NA in this column)
          ) %>%
-  # Create Organ
-  mutate(Organ = factor(case_when(str_detect(Sample_name, "_Cecum_") ~ "Cecum",
-                                  str_detect(Sample_name, "_Colon_") ~ "Colon",
-                                  str_detect(Sample_name, "_Feces_") ~ "Feces"),
-                        levels = c("Feces", "Colon", "Cecum")
-                ) # sum(is.na(otu_df$Organ)) returns __ (as expected, controls have NA in this column)
-         ) %>%
+  # Create Tissue
+  mutate(Tissue = factor(case_when(str_detect(Sample_name, "Cecum") ~ "Cecum",
+                                  str_detect(Sample_name, "Colon") ~ "Colon",
+                                  str_detect(Sample_name, "Feces") ~ "Feces",
+                                  str_detect(Sample_name, "SID") ~ "SID",
+                                  str_detect(Sample_name, "SII") ~ "SII",
+                                  str_detect(Sample_name, "SIJ") ~ "SIJ",
+                                  str_detect(Sample_name, "Stomach") ~ "Stomach"),
+                        levels = c("Stomach", "SID", "SIJ", "SII", "Cecum", "Colon", "Feces")
+                        ) # sum(is.na(otu_df$Tissue)) returns __ (as expected, controls have NA in this column)
+  ) %>%
   # Create Mouse
   mutate(Mouse = as.numeric(str_extract(Sample_name, "(?<=M)\\d+")
               ) # sum(is.na(otu_df$Mouse)) returns __ (as expected, the controls have NA in this column)
          ) %>%
+  # Alternative Mouse creation:
+  # mutate(Mouse = fct_inseq(ifelse(!is.na(Tissue), str_extract(Sample_name, "\\d+$"), NA))
   # Create Run
   mutate(Run = str_extract(Sample_name, "(?<=N)\\d$")
          ) %>%
   # metadata columns at front, followed by all of the count data
   dplyr::select(Sample_name:Run, everything())
   # note that the data is in wide format
+
+# Optionally, subset to retain only samples of interest to this analysis
+exp1_fec_df <- otu_df %>%
+  dplyr::filter(Experiment %in% c("Exp1"), Tissue == "Feces") %>%
+  droplevels() # discard unused factor levels
 ```
 
-After the data was processed using mothur(v.1.39.4), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. Next, any OTU count that made up less than .1% of the total OTU count for any given sample was set to 0. Subsequently, any OTUs which had a value of 0 for sum of counts across all samples were removed from the data, leaving `r dim(otu_good)[2]` OTUs for further analysis. There are `r dim(otu_good)[1]` samples when including all controls and experiments.
+```{r phy_agg}
+phy_df <- agg_otus(otu_df) # aggregate by Phylum, add metadata
+  
+phy_df <- phy_df %>%
+  dplyr::select(Sample_name, colnames(phy_df[,2:19])[colSums(phy_df[,2:19]) > 0]) %>% # Retain only the phyla that were present in any of these samples
+  inner_join(dplyr::select(otu_df, -contains("Otu")), by = "Sample_name") %>%
+  dplyr::select(Sample_name, Experiment:Mouse, everything())
+```
+
+```{r pal_prep, fig.width=8, include=F}
+# 9 color palette - for 9 unique values in a categorical variable total; for PCA ordinations
+set1cols <- brewer.pal(9,"Set1")
+
+# Determine abundance ranking of phyla within samples
+phy_rank <- phy_df %>% 
+  gather(key = "Phylum", value = "Perc", -c(dplyr::select(otu_df, -contains("Otu")) %>% colnames())) %>% 
+  group_by(Phylum) %>%
+  summarize(Mean_Perc = mean(Perc)) %>%
+  arrange(desc(Mean_Perc))
+phy_rank$Phylum <- fct_inorder(phy_rank$Phylum)
+
+# One approach for a custom palette - this has limitations if more than around 12-15 Phyla levels are necessary
+phy_pal <- scales::hue_pal(c = 125, l = 70, h.start=150)(length(levels(phy_rank$Phylum)))
+```
+
+After the data was processed using mothur(v.1.42.3), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. Of ___ total OTUs, ___ were denoted as Bacteria_unclassified and were removed. Next, any OTU count that made up less than .05% of the total OTU count for any given sample was set to 0. Subsequently, any OTUs which had a value of 0 for sum of counts across all samples were removed from the data, leaving `r dim(otu_good)[2]` OTUs for further analysis. There are `r dim(otu_good)[1]` samples when including all controls and experiments.  
+
+```{r export_norm_taxm, include = FALSE}
+# export normalized counts of samples and metadata
+# export_norm_tax(norm_df = dplyr::filter(otu_df, Experiment == "Exp1", !is.na(Tissue)), digits = 2)
+```
 
 ```{r summary_table}
 # Use knitr::kable to generate a table summarizing key information about the experiment, e.g. number of samples by treatments
+otu_df %>%
+  dplyr::filter(Experiment == "Exp1") %>%
+  dplyr::select(Sample_name:Mouse) %>%
+  # arrange(Housing, Cage, Sample_name) %>%
+  knitr::kable(caption = "Exp1 Samples: Current metadata", align = "l")
 ```
 
 \newpage
@@ -168,7 +222,23 @@ plot_ra(df = empty_gg, title = "Cross-Comparison of Empty Wells", facet_var = "S
 ```
 
 \newpage
-# III. PCA  
+# III. Relative Abundance  
+## 3.1 RA by Sample  
+[Descriptive text here]
+
+```{r ra_ind_samp}
+otu_df %>%
+  dplyr::filter(Mouse == 1, Tissue == "Feces") %>%
+  dropevels() %>%
+  tsg_ind() %>% # otu_vec could be used to order these within sample OTUs by the mean of a larger/different grouping
+  droplevels()
+  
+plot_ra(yvar = "Percentage", title = paste0("Exp1, Tissue: ", pull(., Tissue), ", Mouse: ", pull(., Mouse)), fill = "Phylum", phy_vec = phy_rank$Phylum, fill_pal = phy_pal) +
+  labs(subtitle = paste0("OTUs Ordered by: ___"))
+```
+
+\newpage
+# IV. PCA  
 [Descriptive text here]
 
 ```{r pca_prep}
