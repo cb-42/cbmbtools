@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = FALSE, # whether code should be displayed in docume
 library(tidyverse)      # ggplot, dplyr, purrr, forcats, stringr... and other packages. See https://tidyverse.tidyverse.org/
 
 # II. formatting, plotting
-library(scales)         # used in formatting relative abundance % labels; dollar_format()
+library(scales)         # used in formatting relative abundance % labels; unit_format()
 library(knitr)          # necessary for kable, for displaying nicer tables in html/pdf output
 library(RColorBrewer)   # for generating custom palettes
 # library(grid)         
@@ -48,6 +48,10 @@ library(mvabund)
 # devtools::update_packages("cbmbtools")
 library(cbmbtools)
 library(testthat) # expect_identical() and related functions are useful for ensuring custom functions return expected output
+```
+
+```{r function_prep, message = FALSE}
+# Space for keeping customized functions which may only be useful for this analysis, such as plotting or data wrangling with slight variations.
 ```
 
 # I. Data Preparation
@@ -112,8 +116,17 @@ otu_df <- data.frame(decostand(otu_good, "total") * 100, Sample_name = row.names
          ) %>%
   # Alternative Mouse creation:
   # mutate(Mouse = fct_inseq(ifelse(!is.na(Tissue), str_extract(Sample_name, "\\d+$"), NA))
+  # Create Sex
+  mutate(Sex = factor(str_extract(Mouse, "[FM]$"))
+         ) %>%
+  # Create Cage/Group
+  mutate(Cage = case_when((Group == "WT") & (Sex == "F") ~ 1,
+                          (Group == "WT") & (Sex == "M") ~ 2,
+                          (Group == "Y709F") & (Sex == "F") ~ 3,
+                          (Group == "Y709F") & (Sex == "M") ~ 4
+         )) %>%
   # Create Run
-  mutate(Run = str_extract(Sample_name, "(?<=N)\\d$")
+  mutate(Run = factor(str_extract(Sample_name, "(?<=N)\\d$"))
          ) %>%
   # metadata columns at front, followed by all of the count data
   dplyr::select(Sample_name:Run, everything())
@@ -238,6 +251,60 @@ plot_ra(yvar = "Percentage", title = paste0("Exp1, Tissue: ", pull(., Tissue), "
 ```
 
 \newpage
+## 3.2 RA for Individual Treatment Group (unfaceted)
+
+```{r ra_tg1, fig.height=6, fig.width=12}
+# aggregate data 
+kin_agg <- dplyr::filter(samp_df, ExptGrp == "TG1") %>% 
+  taxon_sort_gather() %>%
+  droplevels()
+
+# individual observations - for scatterplot
+# kin_ind <- dplyr::filter(otu_df, Day == 0, Organ == "Feces", Treatment_group %in% c("Exp1", "Exp2")) %>%
+#   tsg_ind(otu_vec = kin_agg$OTU) %>% droplevels()
+
+plot_ra(df=kin_agg, title="Relative Abundance of WT18 samples", fill="Phylum", phy_vec=phy_rank$Phylum, fill_pal=phy_pal, error_bar=TRUE)
+```
+
+\newpage
+## 3.3 RA for all ExptGrps, Ordered by 1 ExptGrp (faceted)
+
+```{r ra_all_exp, fig.height=14, fig.width=12}
+# aggregate data
+kin_agg <- samp_df %>% # Add filtering if needed
+  taxon_sort_gather(facet_var = "ExptGrp", ord_val = "ExptGrp1") %>% 
+  droplevels()
+
+# individual observations - update as necessary
+# kin_ind <- dplyr::filter(otu_df, Day == 0, Organ == "Feces", Treatment_group %in% c("Exp1", "Exp2")) %>%
+#   tsg_ind(otu_vec = kin_agg$OTU) %>% droplevels()
+
+plot_ra(df=kin_agg, title="Relative Abundance of All ExptGrps, ordered by ExptGrp1", facet_var = "ExptGrp", fill="Phylum", phy_vec=phy_rank$Phylum, fill_pal=phy_pal, error_bar=TRUE)
+```
+
+\newpage
+## 3.4 RA by ExptGrp, Aggregated by Phyla (unfaceted)
+
+```{r phy_exptgrp1, fig.height=6, fig.width=12}
+phy_filt <- phy_df %>%
+  dplyr::filter(ExptGrp == "ExptGrp1") %>%
+  droplevels()
+
+taxon_order <- names(sort(colMeans(dplyr::select(phy_filt, -Sample_name:-Cage)), decreasing = TRUE)) # workaround for rank_tax() due to removing Phyla earlier in the workflow
+
+phy_agg <- phy_filt %>% 
+  dplyr::select(Sample_name:Cage, all_of(taxon_order)) %>%
+  gather(key = Phylum, value = Percentage, -Sample_name:-Cage, factor_key = TRUE) %>% # update to pivot_longer
+  group_by(Phylum) %>%
+  dplyr::summarize(Mean_Perc = mean(Percentage), SEM = sem(Percentage)) %>%
+  dplyr::filter(Mean_Perc > 0 ) %>%
+  arrange(desc(Mean_Perc)) %>% 
+  droplevels() # remove Phylum with 0 values
+
+plot_ra(df=phy_agg,  title="ExptGrp1 samples, Aggregated by Phylum", fill="Phylum", taxon="Phylum", phy_vec=phy_rank$Phylum, fill_pal=phy_pal)
+```
+
+\newpage
 # IV. PCA  
 [Descriptive text here]
 
@@ -251,4 +318,64 @@ otu_good2_hel <- decostand(dplyr::select(otu_good2, contains("Otu")), "hellinger
 otu_good2_pca <- rda(otu_good2_hel)
 
 # (summary(otu_good2_pca)) # 0.3006 0.10995 0.06362 proportion explained by first 3 axes
+```
+
+## 4.1 Centroids
+
+```{r samp_all_pca, fig.height=10, fig.width=12}
+# set.seed(3881) # permanova
+# adonis(otu_good2_hel~samp_df$Tissue, method="euclidean", permutations = 10000) # 9.999e-05 ***
+
+plot(otu_good2_pca, type = "n", font = 2, font.lab = 2, xlab = "PC1 (38.1% Explained)", ylab = "PC2 (12.6% Explained)",
+     main = "PCA of Exp1 Samples by Tissue", display = "sites")
+points(otu_good2_pca, pch = 19, col = set1cols[as.numeric(samp_df$Tissue)])
+vegan::ordispider(otu_good2_pca, samp_df$Tissue, label = TRUE) # Adds centroids/spiders
+legend("topright", levels(as.factor(samp_df$Tissue)), pch = 19, col = set1cols, title = "Tissue")
+legend("bottomright", legend = "Difference between Tissue Types:\n permanova: p < 0.0001")
+```
+
+\newpage
+## 4.2 Individual Tissue ordination
+This Ordination shows a subset of the points, belonging to a single tissue
+
+```{r samp_all_stomach, fig.height=10, fig.width=12}
+plot(otu_good2_pca, type = "n", font = 2, font.lab = 2, xlab = "PC1 (38.1% Explained)", ylab = "PC2 (12.6% Explained)",
+     main = "PCA of All Exp1 Samples: only Stomach shown", display = "sites")
+points(otu_good2_pca, pch = 19, col = set1cols[1], select = samp_df$Tissue == "Stomach")
+legend("topright", levels(as.factor(samp_df$Tissue))[1], pch = 19, col = set1cols[1])
+```
+
+\newpage
+## 4.3 PCA of ___ Samples: Symbols by ExptGrp, color by Sex (no centroids)
+
+```{r sl_all_pca3, fig.height=10, fig.width=12}
+# set.seed(2315) # permanova
+# adonis(samp_all_hel~samp_df$Group, method="euclidean", permutations = 10000) # 9.999e-05 ***
+
+plot(all_pca, type = "n", font = 2, font.lab = 2, xlab = "PC1 (49.3% Explained)", ylab = "PC2 (10.9% Explained)",
+     main = "PCA of ___ Samples by Group + Housing, color by Sex", display = "sites")
+points(all_pca, pch = c(15, 0, 16, 1)[as.numeric(samp_df$ExptGrp)], col = set1cols[as.numeric(samp_df$Sex)]) # col = set1cols[as.numeric(samp_df$Housing)]
+# vegan::ordispider(sl_all_pca, sl_samp_df$ExptGrp, label = TRUE)
+legend("bottomright", legend = paste(rep(levels(samp_df$ExptGrp),times=2),rep(levels(samp_df$Sex),each=4),sep=", "),col=rep(set1cols[c(2,1)], each=4),pch=rep(c(15,0,16,1),times=2),bty="n",ncol=2,cex=0.7,pt.cex=0.7)
+legend("topright", legend = "Difference between Group + Housing:\n permanova: p < 0.0001")
+```
+
+\newpage
+## 4.4 Lines connecting samples belonging to each Mouse
+
+```{r gg_segment_pca, fig.height=10, fig.width=12, warning=FALSE}
+# Create dataframe with samplenames and PC coords
+pca_df <- data.frame(samp_df[,1:8], summary(samp_all_pca)$sites, row.names = NULL)
+
+coords_df <- pca_df[, 1:10] %>%
+  dplyr::select(Sample_name, Mouse, Housing, PC1, PC2) %>%
+  dplyr::filter(Housing == "18C") %>%
+  left_join(dplyr::filter(pca_df[, 1:10], Housing == "30C"), by = "Mouse")
+
+ggplot(pca_df, aes(x = PC1, y = PC2, shape = ExptGrp)) + 
+  geom_point(size = 2.5) + 
+  geom_segment(data = coords_df, aes(x = PC1.x, xend = PC1.y, y = PC2.x, yend = PC2.y)) +
+  theme_bw() +
+  scale_shape_manual(values = c(15, 0, 16, 1)) +
+  labs(title = "PCA of ___ Samples: Each pair of Mouse samples connected by lines", subtitle = "Difference between Group + Housing: permanova: p < 0.0001", x = "PC1 (49.3% Explained)", y = "PC2 (10.9% Explained)")
 ```
