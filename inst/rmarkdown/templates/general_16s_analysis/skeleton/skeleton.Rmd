@@ -1,7 +1,7 @@
 ---
 title: "Untitled 16S Analysis"
 author: "Christopher A. Brown"
-date: "June 12, 2020"
+date: "`r paste(format(Sys.time(), '%B %d, %Y'), '(revised)')`"
 output: pdf_document
 ---
 ---
@@ -243,7 +243,7 @@ plot_ra(df = empty_gg, title = "Cross-Comparison of Empty Wells", facet_var = "S
 otu_df %>%
   dplyr::filter(Mouse == 1, Tissue == "Feces") %>%
   dropevels() %>%
-  tsg_ind() %>% # otu_vec could be used to order these within sample OTUs by the mean of a larger/different grouping
+  tsg_ind(tax_level = "Phylum") %>% # otu_vec could be used to order these within sample OTUs by the mean of a larger/different grouping
   droplevels()
   
 plot_ra(yvar = "Percentage", title = paste0("Exp1, Tissue: ", pull(., Tissue), ", Mouse: ", pull(., Mouse)), fill = "Phylum", phy_vec = phy_rank$Phylum, fill_pal = phy_pal) +
@@ -348,7 +348,7 @@ legend("topright", levels(as.factor(samp_df$Tissue))[1], pch = 19, col = set1col
 \newpage
 ## 4.3 PCA of ___ Samples: Symbols by ExptGrp, color by Sex (no centroids)
 
-```{r sl_all_pca3, fig.height=10, fig.width=12}
+```{r all_exptgrp_pca, fig.height=10, fig.width=12}
 # set.seed(2315) # permanova
 # adonis(samp_all_hel~samp_df$Group, method="euclidean", permutations = 10000) # 9.999e-05 ***
 
