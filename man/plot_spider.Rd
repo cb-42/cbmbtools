@@ -4,9 +4,17 @@
 \alias{plot_spider}
 \title{Create an ordination with spiders based on \code{spider_vec} and coloring determined by \code{col_vec}.}
 \usage{
-plot_spider(pca_rda_obj, spider_vec, col_vec, col_pal, mtitle = "",
-  col_leg_pos = "bottomright", col_leg_title = "",
-  sig_leg_pos = "topright", sig_leg = "")
+plot_spider(
+  pca_rda_obj,
+  spider_vec,
+  col_vec,
+  col_pal,
+  mtitle = "",
+  col_leg_pos = "bottomright",
+  col_leg_title = "",
+  sig_leg_pos = "topright",
+  sig_leg = ""
+)
 }
 \arguments{
 \item{pca_rda_obj}{Model object resulting from a call to \code{\link[vegan]{rda}}. The proportion of variance explained by PC1 and PC2 is extracted with \code{\link{summary}}.}
@@ -21,11 +29,11 @@ plot_spider(pca_rda_obj, spider_vec, col_vec, col_pal, mtitle = "",
 
 \item{col_leg_pos}{Position to place the color legend, defaults to the bottom right corner. This should be adjusted if it overlaps any points.}
 
-\item{col_leg_title}{Title to be used for the color legend, defaults to an empty string.}
+\item{col_leg_title}{Title to be used for the color legend, defaults to an empty string, which results in no legend being shown.}
 
 \item{sig_leg_pos}{Position to place the significance legend, defaults to the top right corner. This should be adjusted if it overlaps any points.}
 
-\item{sig_leg}{Text describing the result of significance test, defaults to an empty string. (A future version will exclude this legend in the case of default value).}
+\item{sig_leg}{Text describing the result of significance test, defaults to an empty string, which results in no legend being shown.}
 }
 \value{
 A plot is displayed based on \code{pca_rda_obj} and the specified parameters.
@@ -35,5 +43,5 @@ Create an ordination with spiders based on \code{spider_vec} and coloring determ
 }
 \examples{
 plot_spider(pca_rda_obj = otu_exp1_pca, spider_vec = otu_exp1$Treatment_group, col_vec = otu_exp1$Organ, col_pal = my_pal,
-mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ", col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft", sig_leg = "Difference between Treatment Groups:\\n permanova: p < 0.0001")
+mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ", col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft", sig_leg = "Difference between Treatment Groups:\n permanova: p < 0.0001")
 }

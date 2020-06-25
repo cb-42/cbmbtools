@@ -6,9 +6,9 @@
 #' @param col_pal Palette to use for the plot's color scheme. Note that it should be at least as long as the number of unique values in \code{col_vec}.
 #' @param mtitle The main title of the plot, defaults to an empty string.
 #' @param col_leg_pos Position to place the color legend, defaults to the bottom right corner. This should be adjusted if it overlaps any points.
-#' @param col_leg_title Title to be used for the color legend, defaults to an empty string.
+#' @param col_leg_title Title to be used for the color legend, defaults to an empty string, which results in no legend being shown.
 #' @param sig_leg_pos Position to place the significance legend, defaults to the top right corner. This should be adjusted if it overlaps any points.
-#' @param sig_leg Text describing the result of significance test, defaults to an empty string. (A future version will exclude this legend in the case of default value).
+#' @param sig_leg Text describing the result of significance test, defaults to an empty string, which results in no legend being shown.
 #' @return A plot is displayed based on \code{pca_rda_obj} and the specified parameters.
 #' @export
 #' @examples
@@ -29,6 +29,12 @@ plot_spider <- function(pca_rda_obj, spider_vec, col_vec, col_pal, mtitle = "", 
   plot(pca_rda_obj, type="n", font=2, font.lab = 2, xlab = x_lab, ylab = y_lab, main = mtitle, display = "sites")
   points(pca_rda_obj, pch = 19, col = col_pal[as.numeric(col_vec)])
   vegan::ordispider(pca_rda_obj, spider_vec, label = TRUE)
-  legend(col_leg_pos, levels(as.factor(col_vec)), pch = 19, col = col_pal, title = col_leg_title)
-  legend(sig_leg_pos, legend = sig_leg)
+  if(col_leg_title == "") { # Allow for displaying color legend without an empty line when no title is provided.
+    legend(col_leg_pos, levels(as.factor(col_vec)), pch = 19, col = col_pal, title = NULL)
+  } else {
+    legend(col_leg_pos, levels(as.factor(col_vec)), pch = 19, col = col_pal, title = col_leg_title)
+  }
+  if(sig_leg != "") { # Only display significance legend when legend information is provided.
+    legend(sig_leg_pos, legend = sig_leg)
+  }
 }
