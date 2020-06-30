@@ -151,13 +151,16 @@ phy_df <- phy_df %>%
 # 9 color palette - for 9 unique values in a categorical variable total; for PCA ordinations
 set1cols <- brewer.pal(9,"Set1")
 
+# 7 color viridis palette
+# vir7 <- viridis::viridis(n=7)
+
 # Determine abundance ranking of phyla within samples
 phy_rank <- phy_df %>% 
   gather(key = "Phylum", value = "Perc", -c(dplyr::select(otu_df, -contains("Otu")) %>% colnames())) %>% 
   group_by(Phylum) %>%
   summarize(Mean_Perc = mean(Perc)) %>%
-  arrange(desc(Mean_Perc))
-phy_rank$Phylum <- fct_inorder(phy_rank$Phylum)
+  arrange(desc(Mean_Perc)) %>%
+  mutate(Phylum = fct_inorder(Phylum)) # Create ordered factor levels to aid in creating visualizations.
 
 # One approach for a custom palette - this has limitations if more than around 12-15 Phyla levels are necessary
 phy_pal <- scales::hue_pal(c = 125, l = 70, h.start=150)(length(levels(phy_rank$Phylum)))
