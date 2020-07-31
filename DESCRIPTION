@@ -14,18 +14,22 @@ BugReports: https://github.com/cb-42/cbmbtools/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
-  dplyr,
-  forcats,
-  ggplot2,
-  purrr,
-  randomForest,
-  readr,
-  rlang,
-  scales,
-  stringr,
-  tibble,
-  tidyr,
-  vegan
+    dplyr,
+    forcats,
+    ggplot2,
+    purrr,
+    randomForest,
+    readr,
+    rlang,
+    scales,
+    stringr,
+    tibble,
+    tidyr,
+    vegan
 RoxygenNote: 7.1.0
 Suggests: 
+    knitr,
+    mvabund,
+    rmarkdown,
+    RColorBrewer,
     testthat (>= 2.1.0)
