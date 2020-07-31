@@ -1,6 +1,6 @@
 Package: cbmbtools
 Title: CB's Collection of Microbiome Analysis Functions
-Version: 0.0.0.9033
+Version: 0.0.0.9034
 Authors@R: 
     person(given = "Christopher",
            family = "Brown",
@@ -8,7 +8,7 @@ Authors@R:
            email = "chribrwn@med.umich.edu",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: General purpose package containing useful functions for microbiome analysis pipelines
-License: What license it uses
+License: GPL-3
 URL: https://github.com/cb-42/cbmbtools
 BugReports: https://github.com/cb-42/cbmbtools/issues
 Encoding: UTF-8
