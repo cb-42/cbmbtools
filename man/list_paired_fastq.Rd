@@ -20,6 +20,6 @@ No value is returned.
 Generate a list of paired fastq files from given directory.
 }
 \examples{
-list_paired_fastq(dir_in = "unzipped_fastq_files_mothur")
+list_paired_fastq(dir_in = "unzipped_fastq_files_mothur", f_out = "miseq.txt")
 list_paired_fastq(dir_in = "fastq_files_sra", f_out = "exp1_files.csv", mothur = FALSE)
 }

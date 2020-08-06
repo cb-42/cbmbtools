@@ -6,7 +6,7 @@
 #' @return No value is returned.
 #' @export
 #' @examples
-#' list_paired_fastq(dir_in = "unzipped_fastq_files_mothur")
+#' list_paired_fastq(dir_in = "unzipped_fastq_files_mothur", f_out = "miseq.txt")
 #' list_paired_fastq(dir_in = "fastq_files_sra", f_out = "exp1_files.csv", mothur = FALSE)
 
 # function to create 2 columns for pairs of reads (also ignores other files, e.g., config.xml)
