@@ -7,6 +7,7 @@
 #' @param otu_vec Character or factor vector of OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}}.
 #' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
 #' @param tax_level Taxonomic level(s) to join from \code{tax_df}. Defaults to NULL, in which case no join occurs.
+#' @param sample_col Single element character vector specifying the column in \code{df} which contains Sample names. Defaults to Sample_name.
 #' @return An unaggregated dataframe that has been reshaped into long form.
 #' @seealso \code{\link{taxon_sort_gather}}
 #' @export
@@ -18,7 +19,7 @@
 #'     tsg_ind()
 
 # work in progress
-tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NULL, tax_df = otu_good_taxonomy, tax_level = NULL) {
+tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NULL, tax_df = otu_good_taxonomy, tax_level = NULL, sample_col = "Sample_name") {
   # Geometric mean helper: https://stackoverflow.com/questions/2602583/geometric-mean-is-there-a-built-in
   tsg_geo <- function(x, na.rm = TRUE) {
     exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
@@ -27,7 +28,7 @@ tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NUL
   otu_order <- rank_tax(df)
 
   if (ar_mean | geo_mean) {
-    sample_names <- df$Sample_name
+    sample_names <- dplyr::select(df, sample_col) %>% pull()
     temp <- dplyr::select(df, otu_order[1:n])
 
     if (ar_mean) {
@@ -50,6 +51,10 @@ tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NUL
 
     temp <- temp[colMeans(temp) > 0] # remove 0-valued OTUs - could be determined by limiting rank_tax to colMeans() > 0
     df <- cbind(Sample_name = forcats::fct_inorder(sample_names), temp) # maintains rows in the original order, with means appended to end
+    if(sample_col != "Sample_name") {
+      df <- dplyr::rename(df, !!sample_col := Sample_name) # handle alternative sample_id columns
+    }
+
   } else { # non-aggregation case
     if(!is.null(otu_vec)) {
       if(class(otu_vec)=="factor") {

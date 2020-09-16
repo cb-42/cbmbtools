@@ -11,7 +11,8 @@ tsg_ind(
   geo_mean = FALSE,
   otu_vec = NULL,
   tax_df = otu_good_taxonomy,
-  tax_level = NULL
+  tax_level = NULL,
+  sample_col = "Sample_name"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ tsg_ind(
 \item{tax_df}{Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.}
 
 \item{tax_level}{Taxonomic level(s) to join from \code{tax_df}. Defaults to NULL, in which case no join occurs.}
+
+\item{sample_col}{Single element character vector specifying the column in \code{df} which contains Sample names. Defaults to Sample_name.}
 }
 \value{
 An unaggregated dataframe that has been reshaped into long form.
