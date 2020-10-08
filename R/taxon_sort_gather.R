@@ -54,7 +54,7 @@ taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_
     dplyr::arrange(desc(Mean_Perc))
 
   # label OTU
-  levels(df$OTU) <- paste_tax(levels(df$OTU))
+  levels(df$OTU) <- paste_tax(levels(df$OTU), tax_df)
 
   return(df)
 }
