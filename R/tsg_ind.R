@@ -4,7 +4,7 @@
 #' @param n Number of OTUs to return, 50 by default.
 #' @param ar_mean Boolean to indicate whether the arithmetic mean should be appended to the data.
 #' @param geo_mean Boolean to indicate whether the geometric mean should be appended to the data.
-#' @param otu_vec Character or factor vector of OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}}.
+#' @param otu_vec Character or factor vector of unique OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}} and are used to ensure consistency between OTU factor levels.
 #' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
 #' @param tax_level Taxonomic level(s) to join from \code{tax_df}. Defaults to NULL, in which case no join occurs.
 #' @param sample_col Single element character vector specifying the column in \code{df} which contains Sample names. Defaults to Sample_name.
@@ -16,7 +16,7 @@
 #'     tsg_ind(n = 20, ar_mean = T, geo_mean = T)
 #'
 #' filt_df_ind <- dplyr::filter(otu_df, Experiment %in% c("A", "B"), Treatment_group == "TG1", Organ == "Feces", Day == 11) %>%
-#'     tsg_ind()
+#'     tsg_ind(otu_vec = levels(filt_df$OTU))
 
 # work in progress
 tsg_ind <- function(df, n = 50, ar_mean = FALSE, geo_mean = FALSE, otu_vec = NULL, tax_df = otu_good_taxonomy, tax_level = NULL, sample_col = "Sample_name") {

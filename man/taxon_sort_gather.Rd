@@ -16,7 +16,7 @@ taxon_sort_gather(
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in wide format.}
 
-\item{n}{Number of OTUs to return, 50 by default.}
+\item{n}{Number of OTUs to return, 50 by default. Fewer results will be returned if there are not enough entities with non-zero abundances.}
 
 \item{facet_var}{Variable to be used for grouping and eventual faceting, possibly in \code{plot_ra}.}
 

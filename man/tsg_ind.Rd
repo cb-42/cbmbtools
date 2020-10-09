@@ -24,7 +24,7 @@ tsg_ind(
 
 \item{geo_mean}{Boolean to indicate whether the geometric mean should be appended to the data.}
 
-\item{otu_vec}{Character or factor vector of OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}}.}
+\item{otu_vec}{Character or factor vector of unique OTU identifiers. These are OTUs resulting from a dataframe output by \code{\link{taxon_sort_gather}} and are used to ensure consistency between OTU factor levels.}
 
 \item{tax_df}{Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.}
 
@@ -43,7 +43,7 @@ mock_gg <- dplyr::filter(otu_df, Experiment == "Zymo_Mock") \%>\%
     tsg_ind(n = 20, ar_mean = T, geo_mean = T)
 
 filt_df_ind <- dplyr::filter(otu_df, Experiment \%in\% c("A", "B"), Treatment_group == "TG1", Organ == "Feces", Day == 11) \%>\%
-    tsg_ind()
+    tsg_ind(otu_vec = levels(filt_df$OTU))
 }
 \seealso{
 \code{\link{taxon_sort_gather}}

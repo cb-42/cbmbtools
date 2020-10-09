@@ -1,7 +1,7 @@
 #' Transform data from wide to long, join a taxonomic level, aggregate and create summary statistics, and return n OTUs.
 #'
 #' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in wide format.
-#' @param n Number of OTUs to return, 50 by default.
+#' @param n Number of OTUs to return, 50 by default. Fewer results will be returned if there are not enough entities with non-zero abundances.
 #' @param facet_var Variable to be used for grouping and eventual faceting, possibly in \code{plot_ra}.
 #' @param ord_val Level with the \code{facet_var} to be used for ranking OTUs.
 #' @param tax_df Taxonomy table. Passed to \code{\link{join_tax}}. Defaults to \code{otu_good_taxonomy}.
@@ -51,6 +51,7 @@ taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_
   df <- dplyr::summarize(df, Mean_Perc = mean(Percentage), SEM = tsg_sem(Percentage)) %>%
     dplyr::ungroup() %>%
     dplyr::filter(Mean_Perc > 0) %>%
+    droplevels() %>% # remove factor levels corresponding to entities that have been removed
     dplyr::arrange(desc(Mean_Perc))
 
   # label OTU
