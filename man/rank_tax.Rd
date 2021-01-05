@@ -4,8 +4,7 @@
 \alias{rank_tax}
 \title{Generate a ranked vector of OTUs or other taxonomic level.}
 \usage{
-rank_tax(df, desc = TRUE, tax_level = "OTU",
-  tax_df = otu_good_taxonomy)
+rank_tax(df, desc = TRUE, tax_level = "OTU", tax_df = otu_good_taxonomy)
 }
 \arguments{
 \item{df}{A dataframe containing OTU data to be used to determine ranking.}

@@ -42,6 +42,9 @@ A plot is displayed based on \code{pca_rda_obj} and the specified parameters.
 Create an ordination with spiders based on \code{spider_vec} and coloring determined by \code{col_vec}.
 }
 \examples{
-plot_spider(pca_rda_obj = otu_exp1_pca, spider_vec = otu_exp1$Treatment_group, col_vec = otu_exp1$Organ, col_pal = my_pal,
-mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ", col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft", sig_leg = "Difference between Treatment Groups:\n permanova: p < 0.0001")
+plot_spider(pca_rda_obj = otu_exp1_pca, spider_vec = otu_exp1$Treatment_group,
+    col_vec = otu_exp1$Organ, col_pal = my_pal,
+    mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ",
+    col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft",
+    sig_leg = "Difference between Treatment Groups:\n permanova: p < 0.0001")
 }

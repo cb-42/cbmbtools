@@ -6,7 +6,7 @@
 #' @return Returns a matrix containing OTU counts, (optionally) without OTUs contained in \code{otu_vec} and also trimmed to remove OTUs that did not cross the specified percentage in at least one sample.
 #' @export
 #' @examples
-#' load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared", thresh = .05)
+#' load_shared("miseq_mothur.shared", thresh = .05)
 
 load_shared <- function(shared, otu_vec = NULL, thresh = 0.1) {
   # Read in OTU counts

@@ -4,9 +4,20 @@
 \alias{plot_ra}
 \title{Create an ordered relative abundance plot}
 \usage{
-plot_ra(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc",
-  title = "", error_bar = FALSE, facet_var = NULL, fill = NULL,
-  phy_vec = NULL, fill_pal = NULL, gtxt = FALSE, seed = 123)
+plot_ra(
+  df,
+  df_obs = NULL,
+  taxon = "OTU",
+  yvar = "Mean_Perc",
+  title = "",
+  error_bar = FALSE,
+  facet_var = NULL,
+  fill = NULL,
+  phy_vec = NULL,
+  fill_pal = NULL,
+  gtxt = FALSE,
+  seed = 123
+)
 }
 \arguments{
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
@@ -41,8 +52,8 @@ A ggplot created based on \code{df} and the specified parameters. It can be furt
 Create an ordered relative abundance plot
 }
 \examples{
-plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage", facet_var = "Sample",
-   fill = "Phylum", gtxt = T)
+plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage",
+   facet_var = "Sample", fill = "Phylum", gtxt = T)
 
 plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
    facet_var = "Group", fill = "Phylum", error_bar = T)

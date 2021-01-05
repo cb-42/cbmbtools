@@ -24,5 +24,6 @@ A list object containing \code{nforest randomForest} models.
 Generate a list of randomForest models.
 }
 \examples{
-many_rf(data = vfd_fam.norm[, -length(vfd_fam.norm)], y = vfd_fam.norm[, "VFDandAlive"], importance = TRUE)
+many_rf(data = vfd_fam.norm[, -length(vfd_fam.norm)], y = vfd_fam.norm[, "VFDandAlive"],
+  importance = TRUE)
 }

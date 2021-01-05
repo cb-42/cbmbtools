@@ -12,8 +12,11 @@
 #' @return A plot is displayed based on \code{pca_rda_obj} and the specified parameters.
 #' @export
 #' @examples
-#' plot_spider(pca_rda_obj = otu_exp1_pca, spider_vec = otu_exp1$Treatment_group, col_vec = otu_exp1$Organ, col_pal = my_pal,
-#' mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ", col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft", sig_leg = "Difference between Treatment Groups:\n permanova: p < 0.0001")
+#' plot_spider(pca_rda_obj = otu_exp1_pca, spider_vec = otu_exp1$Treatment_group,
+#'     col_vec = otu_exp1$Organ, col_pal = my_pal,
+#'     mtitle = "PCA of Experiment1 Samples by Treatment Group and Organ",
+#'     col_leg_pos = "bottomright", col_leg_title = "Organ", sig_leg_pos = "topleft",
+#'     sig_leg = "Difference between Treatment Groups:\n permanova: p < 0.0001")
 
 # work in progress; designed to automate generic combinations for ordinations
 plot_spider <- function(pca_rda_obj, spider_vec, col_vec, col_pal, mtitle = "", col_leg_pos = "bottomright", col_leg_title = "", sig_leg_pos = "topright", sig_leg = "") {

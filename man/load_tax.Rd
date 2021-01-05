@@ -18,6 +18,6 @@ Returns a dataframe containing taxonomy data, optionally subset by the OTUs with
 Reads in a file containing taxonomy data and performs basic processing.
 }
 \examples{
-load_tax("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared")
-load_tax("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared", otu_good)
+load_tax("miseq_mothur.cons.taxonomy")
+load_tax("miseq_mothur.cons.taxonomy", otu_good)
 }

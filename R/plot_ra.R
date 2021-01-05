@@ -16,8 +16,8 @@
 #' @return A ggplot created based on \code{df} and the specified parameters. It can be further modified with additional layers.
 #' @export
 #' @examples
-#' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage", facet_var = "Sample",
-#'    fill = "Phylum", gtxt = T)
+#' plot_ra(mock_df, title = "Cross-Comparison of Mock Control Replicates", yvar = "Percentage",
+#'    facet_var = "Sample", fill = "Phylum", gtxt = T)
 #'
 #' plot_ra(samp_df, title = "Exp1 & 2 Stomachs by Treatment, Ordered by Untreated",
 #'    facet_var = "Group", fill = "Phylum", error_bar = T)

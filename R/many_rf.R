@@ -8,7 +8,8 @@
 #' @return A list object containing \code{nforest randomForest} models.
 #' @export
 #' @examples
-#' many_rf(data = vfd_fam.norm[, -length(vfd_fam.norm)], y = vfd_fam.norm[, "VFDandAlive"], importance = TRUE)
+#' many_rf(data = vfd_fam.norm[, -length(vfd_fam.norm)], y = vfd_fam.norm[, "VFDandAlive"],
+#'   importance = TRUE)
 
 many_rf <- function(df, y, nforest = 100, seed = 1234, ...) {
   set.seed(seed)

@@ -15,7 +15,8 @@
 #' mock_gg <- dplyr::filter(otu_df, Experiment == "Zymo_Mock") %>%
 #'     tsg_ind(n = 20, ar_mean = T, geo_mean = T)
 #'
-#' filt_df_ind <- dplyr::filter(otu_df, Experiment %in% c("A", "B"), Treatment_group == "TG1", Organ == "Feces", Day == 11) %>%
+#' filt_df_ind <- dplyr::filter(otu_df, Experiment %in% c("A", "B"),
+#'     Treatment_group == "TG1", Organ == "Feces", Day == 11) %>%
 #'     tsg_ind(otu_ord = levels(filt_df$OTU))
 
 # work in progress

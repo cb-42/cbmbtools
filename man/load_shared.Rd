@@ -20,5 +20,5 @@ Returns a matrix containing OTU counts, (optionally) without OTUs contained in \
 Reads in a file containing OTU count data and keeps OTUs which meet or exceed a specified \% abundance in at least one sample.
 }
 \examples{
-load_shared("miseq.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared", thresh = .05)
+load_shared("miseq_mothur.shared", thresh = .05)
 }
