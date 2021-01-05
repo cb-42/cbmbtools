@@ -1,5 +1,5 @@
-# cbmbtools
-General purpose package containing useful functions for microbiome analysis pipelines  
+# cbmbtools - General purpose package containing useful functions for microbiome analysis pipelines
+[![R build status](https://github.com/cb-42/cbmbtools/workflows/R-CMD-check/badge.svg)](https://github.com/cb42/cbmbtools/aactions)
 
 ## Installation
 First, install the devtools package (if it isn't already) and then load it.  
