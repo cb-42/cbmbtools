@@ -7,7 +7,7 @@ Authors@R:
            family = "Brown",
            role = c("aut", "cre"),
            email = "chribrwn@med.umich.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0001-8855-4355"))
 Description: General purpose package containing functions for facilitating microbiome analysis pipelines, including data import, manipulation, and visualization tasks.
 License: GPL-3
 URL: https://github.com/cb-42/cbmbtools
