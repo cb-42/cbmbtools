@@ -48,8 +48,7 @@ taxon_sort_gather <- function(df, n = 50, facet_var = NULL, ord_val = NULL, tax_
   }
 
   # Summary statistics
-  df <- dplyr::summarize(df, Mean_Perc = mean(Percentage), SEM = tsg_sem(Percentage)) %>%
-    dplyr::ungroup() %>%
+  df <- dplyr::summarize(df, Mean_Perc = mean(Percentage), SEM = tsg_sem(Percentage), .groups = "drop") %>%
     dplyr::filter(Mean_Perc > 0) %>%
     droplevels() %>% # remove factor levels corresponding to entities that have been removed
     dplyr::arrange(desc(Mean_Perc))

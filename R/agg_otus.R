@@ -23,7 +23,6 @@ agg_otus <- function(df = otu_df, sample_col = NULL, tax_df = otu_good_taxonomy,
   df %>% dplyr::select({{samples}}, contains("Otu")) %>%
     join_tax(tax_df, tax_levels = taxon) %>% # Transform and add taxonomic levels
     dplyr::group_by(.data[[{{samples}}]], .data[[taxon]]) %>% # aggregate otus by level
-    dplyr::summarize(Percentage = sum(Percentage)) %>%
-    dplyr::ungroup() %>%
+    dplyr::summarize(Percentage = sum(Percentage), .groups = "drop") %>%
     tidyr::spread(key = .data[[taxon]], value = Percentage)
 }

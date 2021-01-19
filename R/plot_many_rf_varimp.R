@@ -28,7 +28,7 @@ plot_many_rf_varimp <- function(rf_list, tax = NULL, n = 50) {
 
   # top n features by mean meas
   top_feat <- fi_df %>% dplyr::group_by(Feature) %>%
-    dplyr::summarize(!!meas := mean(.data[[meas]])) %>%
+    dplyr::summarize(!!meas := mean(.data[[meas]]), .groups = "drop") %>%
     dplyr::arrange(desc(.data[[meas]])) %>%
     head(n) %>%
     droplevels()

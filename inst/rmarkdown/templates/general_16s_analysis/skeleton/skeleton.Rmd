@@ -158,7 +158,7 @@ set1cols <- brewer.pal(9,"Set1")
 phy_rank <- phy_df %>% 
   gather(key = "Phylum", value = "Perc", -c(dplyr::select(otu_df, -contains("Otu")) %>% colnames())) %>% 
   group_by(Phylum) %>%
-  summarize(Mean_Perc = mean(Perc)) %>%
+  summarize(Mean_Perc = mean(Perc), .groups = "drop") %>%
   arrange(desc(Mean_Perc)) %>%
   mutate(Phylum = fct_inorder(Phylum)) # Create ordered factor levels to aid in creating visualizations.
 
@@ -245,7 +245,7 @@ plot_ra(df = empty_gg, title = "Cross-Comparison of Empty Wells", facet_var = "S
 ```{r ra_ind_samp}
 otu_df %>%
   dplyr::filter(Mouse == 1, Tissue == "Feces") %>%
-  dropevels() %>%
+  droplevels() %>%
   tsg_ind(tax_level = "Phylum") %>% # otu_vec could be used to order these within sample OTUs by the mean of a larger/different grouping
   droplevels()
   
@@ -299,7 +299,7 @@ phy_agg <- phy_filt %>%
   dplyr::select(Sample_name:Cage, all_of(taxon_order)) %>%
   gather(key = Phylum, value = Percentage, -Sample_name:-Cage, factor_key = TRUE) %>% # update to pivot_longer
   group_by(Phylum) %>%
-  dplyr::summarize(Mean_Perc = mean(Percentage), SEM = sem(Percentage)) %>%
+  dplyr::summarize(Mean_Perc = mean(Percentage), SEM = sem(Percentage), .groups = "drop") %>%
   dplyr::filter(Mean_Perc > 0 ) %>%
   arrange(desc(Mean_Perc)) %>% 
   droplevels() # remove Phylum with 0 values
