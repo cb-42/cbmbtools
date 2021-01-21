@@ -136,15 +136,23 @@ otu_df <- data.frame(decostand(otu_good, "total") * 100, Sample_name = row.names
 exp1_fec_df <- otu_df %>%
   dplyr::filter(Experiment %in% c("Exp1"), Tissue == "Feces") %>%
   droplevels() # discard unused factor levels
+
+# tidyr::extract() usage
+# sample_names <- paste0(paste0("LMB21_Feces_D", c(1,4,7,10,14)), "_M", rep(c(1:5), each=5))
+
+# meta_df <- sample_names %>%
+#   data.frame(Sample_name = .) %>%
+#   tidyr::extract(col = Sample_name, into = c("Experiment", "Tissue", "Day", "Mouse"), 
+#           regex = "([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)")
 ```
 
 ```{r phy_agg}
 phy_df <- agg_otus(otu_df) # aggregate by Phylum, add metadata
   
 phy_df <- phy_df %>%
-  dplyr::select(Sample_name, colnames(phy_df[,2:19])[colSums(phy_df[,2:19]) > 0]) %>% # Retain only the phyla that were present in any of these samples
+  dplyr::select(Sample_name, colnames(phy_df[,-1])[colSums(phy_df[,-1]) > 0]) %>% # Retain only the phyla that were present in any of these samples
   inner_join(dplyr::select(otu_df, -contains("Otu")), by = "Sample_name") %>%
-  dplyr::select(Sample_name, Experiment:Mouse, everything())
+  dplyr::select(dplyr::select(otu_df, -contains("Otu")) %>% colnames(), everything())
 ```
 
 ```{r pal_prep, fig.width=8, include=F}
@@ -300,7 +308,7 @@ phy_agg <- phy_filt %>%
   gather(key = Phylum, value = Percentage, -Sample_name:-Cage, factor_key = TRUE) %>% # update to pivot_longer
   group_by(Phylum) %>%
   dplyr::summarize(Mean_Perc = mean(Percentage), SEM = sem(Percentage), .groups = "drop") %>%
-  dplyr::filter(Mean_Perc > 0 ) %>%
+  dplyr::filter(Mean_Perc > 0) %>%
   arrange(desc(Mean_Perc)) %>% 
   droplevels() # remove Phylum with 0 values
 
