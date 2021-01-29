@@ -61,12 +61,13 @@ library(testthat) # expect_identical() and related functions are useful for ensu
 
 # I. Bacteria_unclassified removal (can be skipped if desired); Read in cons.taxonomy
 # ___ Bacteria_unclassified of ___ total untrimmed OTUs (trim = .05%) 
-otu_taxonomy <- load_tax("data.cons.taxonomy")
+otu_taxonomy <- load_tax("data/cons.taxonomy")
 rem_bact <- as.character(otu_taxonomy[otu_taxonomy$Genus == "Bacteria_unclassified", "OTU"])
 
 # Basic processing with selection of OTUs > 0.1 % of the population
 # II. Read in opti_mcc.shared file
-otu_good <- load_shared(shared = "data.shared")
+thresh <- 0.1
+otu_good <- load_shared(shared = "data/shared", thresh)
 # otu_good <- load_shared(shared = "data.shared", otu_vec = rem_bact, thresh = 0.05)
 
 # Trim _S from end of rownames(otu_good); note that it may be useful to keep these well identifiers in some analyses
@@ -78,7 +79,7 @@ dim(otu_good) # dim(otu_good)[1] observations (samples) x dim(otu_good)[2] featu
 # III. Subset otu_taxonomy to retain good/trimmed OTUs only
 otu_good_taxonomy <- droplevels(otu_taxonomy[colnames(otu_good), ])
 
-# otu_good_bact_un <- load_shared(shared = "data.shared", thresh = 0.05) # shared w/o bact_un removal, for comparison
+# otu_good_bact_un <- load_shared(shared = "data/shared", thresh = 0.05) # shared w/o bact_un removal, for comparison
 ```
 
 ```{r metadata_wrangling, include = FALSE}
@@ -174,7 +175,7 @@ phy_rank <- phy_df %>%
 phy_pal <- scales::hue_pal(c = 125, l = 70, h.start=150)(length(levels(phy_rank$Phylum)))
 ```
 
-After the data was processed using mothur(v.1.42.3), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. Of ___ total OTUs, ___ were denoted as Bacteria_unclassified and were removed. Next, any OTU count that made up less than .05% of the total OTU count for any given sample was set to 0. Subsequently, any OTUs which had a value of 0 for sum of counts across all samples were removed from the data, leaving `r dim(otu_good)[2]` OTUs for further analysis. There are `r dim(otu_good)[1]` samples when including all controls and experiments.  
+After the data was processed using mothur(v.1.42.3), it was put through standardization methods for community ecology using the vegan package (version `r packageVersion("vegan")`) in R. To account for singletons and other extremely low abundance OTUs, OTUs which did not cross an abundance threshold of `r paste(thresh, "%")` in any sample were excluded. Of ___ total OTUs, ___ were denoted as Bacteria_unclassified and were also removed. Altogether there are `r dim(otu_good)[2]` remaining OTUs for further analysis. There are `r dim(otu_good)[1]` combined controls and specimens across all experiments.    
 
 ```{r export_norm_taxm, include = FALSE}
 # export normalized counts of samples and metadata
@@ -390,3 +391,24 @@ ggplot(pca_df, aes(x = PC1, y = PC2, shape = ExptGrp)) +
   scale_shape_manual(values = c(15, 0, 16, 1)) +
   labs(title = "PCA of ___ Samples: Each pair of Mouse samples connected by lines", subtitle = "Difference between Group + Housing: permanova: p < 0.0001", x = "PC1 (49.3% Explained)", y = "PC2 (10.9% Explained)")
 ```
+
+\newpage
+## 4.5 Biplot
+
+```{r biplot}
+# Address warnings with the following function, (hides warnings from 0-length arrows)
+# Alternatively, set warning = FALSE in the code chunk; does not seem to work on macs
+quiet_biplot <- quietly(function(ordiobj, ...) {
+  biplot(ordiobj, ...)
+})
+
+# Basic example: this can become difficult to read with many long specimen identifiers
+# biplot_results <- quiet_biplot(otu_con_lung_pca, type = "t")
+
+# A better approach is to use points color coded by the classes of interest as an additional layer on top of the biplot arrows
+biplot_results <- quiet_biplot(otu_con_lung_pca, type = "t", font = 2, font.lab = 2, xlab = "PC1 (17.82% Explained)", ylab = "PC2 (8.60% Explained)",
+                               main = "Biplot: Lung Tissue vs Control samples, colored by Type", display = "species", xlim = c(-0.8, 0.62)) # Note, plot zoom for xlim/ylim may need to be adjusted due to changing the display parameter
+points(otu_con_lung_pca, pch = 19, col = pcapal[c(5,2)][as.numeric(con_lung_df$reagent_tissue)]) # color palette adjustd to conflict less with biplot arrows
+legend("topright", levels(con_lung_df$reagent_tissue), pch = 19, col = pcapal[c(5,2)], title = "Type") # adjust legend colpal to match points
+```
+
