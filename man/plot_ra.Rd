@@ -23,7 +23,7 @@ plot_ra(
 \item{df}{Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
 This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.}
 
-\item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.}
+\item{df_obs}{An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_point}}.}
 
 \item{taxon}{Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted? OTU by default.}
 
@@ -43,7 +43,7 @@ This dataframe is typically the result of processing via \code{\link{taxon_sort_
 
 \item{gtxt}{Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.}
 
-\item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.}
+\item{seed}{Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_point}} layer that adds random horizontal noise to points.}
 }
 \value{
 A ggplot created based on \code{df} and the specified parameters. It can be further modified with additional layers.

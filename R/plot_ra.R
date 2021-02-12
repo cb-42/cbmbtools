@@ -2,7 +2,7 @@
 #'
 #' @param df Dataframe containing metadata and taxon (Phylum, Otu, etc) abundance data in 'long' format, e.g. using \code{\link[tidyr]{gather}}.
 #'     This dataframe is typically the result of processing via \code{\link{taxon_sort_gather}}.
-#' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_jitter}}.
+#' @param df_obs An optional dataframe containing individual observations, when \code{df} contains summarized samples. \code{df_obs} will be used to add a points layer with \code{\link[ggplot2]{geom_point}}.
 #' @param taxon Which taxonomic level within \code{df} (and optionally, \code{df_obs}) should be plotted? OTU by default.
 #' @param yvar Variable to use on the y-axis. Defaults to \code{Mean_Perc}.
 #' @param title String to use as plot title. Defaults to an empty string.
@@ -12,7 +12,7 @@
 #' @param phy_vec Optional vector containing the unique Phyla resulting from \code{\link{load_tax}}, likely following trimming. Combined with \code{fill_pal} this allows for a consistent color scheme across RA plots.
 #' @param fill_pal An optional user-defined palette for maintaining consistent fill colors across RA plots. Best when combined with \code{phy_vec}.
 #' @param gtxt Boolean for whether to include a \code{\link[ggplot2]{geom_text}} layer in the plot which will display actual percentages. Not included by default.
-#' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_jitter}} layer that adds random noise to points.
+#' @param seed Integer to be used as a random seed to ensure reproducibility. For example, this would come into play if using \code{df_obs} which will create a \code{\link[ggplot2]{geom_point}} layer that adds random horizontal noise to points.
 #' @return A ggplot created based on \code{df} and the specified parameters. It can be further modified with additional layers.
 #' @export
 #' @examples
@@ -30,7 +30,6 @@
 #'    facet_var = "Day", fill = "Phylum", phy_vec = phy_rank$Phylum, fill_pal = phy_pal)
 
 plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title = "", error_bar = FALSE, facet_var = NULL, fill = NULL, phy_vec = NULL, fill_pal = NULL, gtxt = FALSE, seed = 123) {
-  set.seed(seed)
 
   # account for fill, either by a taxonomy condition, or grey
   if(!is.null(fill)) { # controls all tax cases, and Sample (controls) (or presumably other columns that exist in data)
@@ -56,7 +55,8 @@ plot_ra <- function(df, df_obs = NULL, taxon = "OTU", yvar = "Mean_Perc", title 
   }
 
   if (!is.null(df_obs)) { # If a dataframe of observations is provided, assume it should be added as a points layer
-    p <- p + geom_jitter(data = df_obs, aes(y = Percentage, x = .data[[taxon]]), alpha = 0.3, width = .15)
+    p <- p + geom_point(data = df_obs, aes(y = Percentage, x = .data[[taxon]]), alpha = 0.3,
+                        position = position_jitter(width = 0.15, seed = seed))
   }
 
   # Determine x-axis label
